@@ -4,8 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "esbuild-loader": "^2.13.0",
     "html-webpack-plugin": "^5.3.1",
+    "raw-loader": "^4.0.2",
+    "react-svg-loader": "^3.0.3",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "@storybook/csf": "^0.0.1",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
   }
 }

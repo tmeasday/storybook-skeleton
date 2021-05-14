@@ -2,8 +2,7 @@ import { renderStory } from './renderStory';
 import { loadCsfFile } from './loadCsfFile';
 import { composeStory } from './composeStory.ts';
 
-// const globalConfig = require('../../../Chroma/chromatic/.storybook/preview.js');
-const globalConfig = {};
+const globalConfig = require('../../../Chroma/chromatic/.storybook/preview.js');
 
 const context = require.context(
   '../../../Chroma/chromatic/services/webapp/components',
