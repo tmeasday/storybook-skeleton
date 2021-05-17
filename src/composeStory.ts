@@ -75,7 +75,7 @@ export function composeStory<GenericArgs>(
   };
 
   const combinedDecorators = [
-    ...(story?.story.decorators || story.decorators || []),
+    ...(story.story?.decorators || story.decorators || []),
     ...(meta?.decorators || []),
     ...(globalConfig?.decorators || []),
   ];
