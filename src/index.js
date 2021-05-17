@@ -1,6 +1,6 @@
-import { renderStory } from './renderStory';
-import { loadCsfFile } from './loadCsfFile';
-import { composeStory } from './composeStory.ts';
+import { renderStory } from './storybook/renderStory';
+import { loadCsfFile } from './storybook/loadCsfFile';
+import { composeStory } from './storybook/composeStory.ts';
 
 const globalConfig = require('../../../Chroma/chromatic/.storybook/preview.js');
 
