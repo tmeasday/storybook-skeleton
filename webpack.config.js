@@ -9,7 +9,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.([t|j]s|svg)$/,
+        test: /\.([t|j]sx?|svg)$/,
         loader: 'esbuild-loader',
         exclude: /node_modules/,
         options: {
@@ -19,6 +19,9 @@ module.exports = {
       },
       ...require(`./webpack/${project}-loaders`).loaders,
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
   output: {
     filename: '[name].bundle.js',
