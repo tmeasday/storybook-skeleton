@@ -5,7 +5,7 @@ const project = process.env.PROJECT || 'template';
 
 module.exports = {
   entry: `./src/${project}-entry.js`,
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [new HtmlWebpackPlugin({ filename: 'iframe.html' })],
   module: {
     rules: [
       {
