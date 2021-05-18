@@ -7,7 +7,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-header--loggedin",
-        "fileName": "./src/template/Header.stories.js"
+        "fileName": "./Header.stories.js"
       },
       "kind": "Example/Header"
     },
@@ -17,7 +17,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-header--loggedout",
-        "fileName": "./src/template/Header.stories.js"
+        "fileName": "./Header.stories.js"
       },
       "kind": "Example/Header"
     },
@@ -27,7 +27,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-button--primary",
-        "fileName": "./src/template/Button.stories.js"
+        "fileName": "./Button.stories.js"
       },
       "kind": "Example/Button"
     },
@@ -37,7 +37,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-button--secondary",
-        "fileName": "./src/template/Button.stories.js"
+        "fileName": "./Button.stories.js"
       },
       "kind": "Example/Button"
     },
@@ -47,7 +47,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-button--large",
-        "fileName": "./src/template/Button.stories.js"
+        "fileName": "./Button.stories.js"
       },
       "kind": "Example/Button"
     },
@@ -57,7 +57,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-button--small",
-        "fileName": "./src/template/Button.stories.js"
+        "fileName": "./Button.stories.js"
       },
       "kind": "Example/Button"
     },
@@ -67,7 +67,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-page--loggedin",
-        "fileName": "./src/template/Page.stories.js"
+        "fileName": "./Page.stories.js"
       },
       "kind": "Example/Page"
     },
@@ -77,7 +77,7 @@
       "parameters": {
         "__isArgsStory": false,
         "__id": "example-page--loggedout",
-        "fileName": "./src/template/Page.stories.js"
+        "fileName": "./Page.stories.js"
       },
       "kind": "Example/Page"
     }
