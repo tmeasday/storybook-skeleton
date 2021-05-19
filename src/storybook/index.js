@@ -17,8 +17,6 @@ export async function configure(context, storiesJson, globalConfig = {}) {
   const params = new URLSearchParams(document.location.search);
   const storyId = params.get('id');
 
-  if (storyId) await renderStoryId(storyId);
-
   send({
     type: 'setStories',
     args: [
@@ -30,4 +28,6 @@ export async function configure(context, storiesJson, globalConfig = {}) {
       },
     ],
   });
+
+  if (storyId) await renderStoryId(storyId);
 }
