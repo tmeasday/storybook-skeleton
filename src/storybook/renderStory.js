@@ -1,9 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 
+let div;
 export function renderStory(Story) {
-  const div = document.createElement('div');
-  document.body.appendChild(div);
+  if (!div) {
+    div = document.createElement('div');
+    div.style.padding = '1rem';
+    document.body.appendChild(div);
+  }
 
   render(<Story />, div);
 }
