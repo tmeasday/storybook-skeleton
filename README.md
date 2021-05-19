@@ -36,6 +36,8 @@ _NOTE:_ if the `require.context` is `lazy`, the CSF files will be loaded on-dema
 
 Currently the process to build and run the skeleton is as follows:
 
+0. If running the design system, check [the code](https://github.com/storybookjs/design-system) out and make a symlink from `./design-system` to it.
+
 1. Build the webpack project into dist, with the `PROJECT` environment variable set:
 
 ```
@@ -51,12 +53,10 @@ npx http-server dist -p 5000 --cors
 3. Run the prebuild manager:
 
 ```
-npx http-server composing-storybook/storybook
+npx http-server composing-storybook/storybook-static
 ```
 
 4. Browse to the URL from step 3: http://localhost:8080
-
-_NOTE_: to run the `design-system` project, you also need to check [the code](https://github.com/storybookjs/design-system) out and make a symlink from `./design-system` to it.
 
 ## Code structure
 
