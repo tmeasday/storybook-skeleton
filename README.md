@@ -56,6 +56,8 @@ npx http-server composing-storybook/storybook
 
 4. Browse to the URL from step 3: http://localhost:8080
 
+_NOTE_: to run the `design-system` project, you also need to check [the code](https://github.com/storybookjs/design-system) out and make a symlink from `./design-system` to it.
+
 ## Code structure
 
 - `src/storybook` - the skeleton's Storybook implementation. This is mostly a cobbled together collection of code / reimplementations from Storybook's source, and can be ignored. The one file of interest is probably `loadStory.js` which combines the `require.context` and `stories.json` data to `require()` a CSF file on demand.
@@ -70,6 +72,4 @@ That is about it for now!
 
 - Only works with React projects.
 
-- Only works with CSF.
-
-- Doesn't work with MDX files.
+- Only works with CSF (in particular ignores MDX files).
