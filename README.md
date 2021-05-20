@@ -46,7 +46,7 @@ export PROJECT=design-system; yarn webpack
 
 > You can specify builder with the `BUILDER` parameter. It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
 
-> There's a flag for lazy compilation. Set `LAZY_COMPILATION=1` to enable the feature.
+> There's a flag for lazy compilation. Set `COMPILE_LAZILY=1` to enable the feature. `PROFILE_CPU` enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
 
 2. Run a HTTP server on port 5000 out of `dist/`
 

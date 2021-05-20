@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { merge } = require("webpack-merge");
 
 const project = process.env.PROJECT || "template";
@@ -111,6 +112,10 @@ const projects = {
   },
 };
 
+const cpuProfiler = {
+  plugins: [new CpuProfilerWebpackPlugin()],
+};
+
 module.exports = merge(
   {
     entry: `./src/${project}-entry.js`,
@@ -135,11 +140,13 @@ module.exports = merge(
   },
   projects[project],
   // TODO: Parse truthy value better as this checks only for existence
-  process.env.LAZY_COMPILATION
+  process.env.COMPILE_LAZILY
     ? {
         experiments: {
           lazyCompilation: true,
         },
       }
-    : {}
+    : {},
+  // TODO: Parse truthy value better as this checks only for existence
+  process.env.PROFILE_CPU ? cpuProfiler : {}
 );
