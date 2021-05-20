@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "wp --target development",
-    "build": "wp --target production"
+    "build": "wp --target production",
+    "benchmark": "node ./scripts/benchmark.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
