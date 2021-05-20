@@ -1,9 +1,47 @@
 // console.time, console.timeEnd
-// BUILDER = babel/swc/esbuild
-// project = design-system
+const webpack = require("webpack");
 const { builderAlternatives } = require("../webpack.parts");
+const composeConfiguration = require("../compose-configuration");
 
-const alternativeNames = Object.keys(builderAlternatives);
-const project = "design-system";
+async function main() {
+  const builds = [];
 
-console.log(alternativeNames, project);
+  Object.keys(builderAlternatives).forEach((builder) => {
+    const productionConfiguration = composeConfiguration({
+      target: "production",
+      project: "design-system",
+      builder,
+      compileLazily: true,
+      profileCpu: true,
+    });
+
+    builds.push(
+      () =>
+        new Promise((resolve, reject) => {
+          console.time(builder);
+          webpack(productionConfiguration, (err, stats) => {
+            if (err) {
+              return reject(err);
+            }
+
+            if (stats.hasErrors()) {
+              return reject(stats.toString("errors-only"));
+            }
+
+            console.timeEnd(builder);
+            resolve();
+          });
+        })
+    );
+  });
+
+  await runInSeries(builds);
+}
+
+async function runInSeries(promises) {
+  for (const promise of promises) {
+    await promise();
+  }
+}
+
+main();
