@@ -1,5 +1,5 @@
 // Telejson appears to be broken
-const { parse, stringify } = require('telejson');
+import { parse, stringify } from 'telejson';
 
 export function setupChannel({ onSetCurrentStory }) {
   window.addEventListener(
