@@ -25,6 +25,8 @@ module.exports = {
     alias: {
       react: path.resolve(__dirname, 'node_modules/react'),
     },
+    // Added this for Chromatic, perhaps we should generalise the config extension
+    fallback: { path: require.resolve('path-browserify') },
   },
   output: {
     filename: '[name].bundle.js',
