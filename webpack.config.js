@@ -133,5 +133,13 @@ module.exports = merge(
       path: path.resolve(__dirname, "dist"),
     },
   },
-  projects[project]
+  projects[project],
+  // TODO: Parse truthy value better as this checks only for existence
+  process.env.LAZY_COMPILATION
+    ? {
+        experiments: {
+          lazyCompilation: true,
+        },
+      }
+    : {}
 );
