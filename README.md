@@ -45,13 +45,7 @@ export PROJECT=design-system; yarn start
 
 > There's a flag for lazy compilation. Set `COMPILE_LAZILY=1` to enable the feature. `PROFILE_CPU` enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
 
-2. Run a HTTP server on port 5000 out of `dist/`
-
-```
-npx http-server dist -p 5000 --cors
-```
-
-3. Run the prebuild manager:
+2. Run the prebuild manager:
 
 ```
 npx http-server composing-storybook/storybook-static
