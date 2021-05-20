@@ -1,12 +1,9 @@
 import { configure } from './storybook';
 
-const globalConfig = require('../../../Chroma/chromatic/.storybook/preview.js');
+const globalConfig = require('../chromatic/.storybook/preview.js');
 
-const context = require.context(
-  '../../../Chroma/chromatic/services/webapp/components',
-  true,
-  /.*\.stories\.js$/,
-  'lazy'
-);
+const context = require.context('../chromatic/services/webapp', true, /.*\.stories\.js$/, 'lazy');
 
-configure(context, globalConfig);
+const storiesJson = require('../stories-json/chromatic.stories.json');
+
+configure(context, storiesJson, globalConfig);

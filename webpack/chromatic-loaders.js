@@ -19,5 +19,13 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'raw-loader',
     },
+    {
+      test: /\.handlebars/,
+      loader: 'handlebars-loader',
+      exclude: /node_modules/,
+      // query: {
+      //   helperDirs: path.join(__dirname, '..','lib', 'emails', 'helpers'),
+      // },
+    },
   ],
 };
