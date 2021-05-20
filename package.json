@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "",
-    "build": ""
+    "start": "wp --target development",
+    "build": "wp --target production"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -29,7 +29,8 @@
     "swc-loader": "^0.1.14",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.7.3",
+    "webpack-nano": "^1.1.1"
   },
   "dependencies": {
     "@storybook/csf": "^0.0.1",

@@ -38,7 +38,7 @@ Currently the process to build and run the skeleton is as follows:
 1. Build the webpack project into dist, with the `PROJECT` environment variable set:
 
 ```
-export PROJECT=design-system; yarn webpack
+export PROJECT=design-system; yarn start
 ```
 
 > You can specify builder with the `BUILDER` parameter. It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".

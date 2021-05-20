@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { merge } = require("webpack-merge");
+const { target } = require("webpack-nano/argv");
 
 const project = process.env.PROJECT || "template";
 const builder = process.env.BUILDER || "esbuild";
@@ -116,11 +117,10 @@ const cpuProfiler = {
   plugins: [new CpuProfilerWebpackPlugin()],
 };
 
-module.exports = merge(
+const commonConfig = merge(
   {
     entry: `./src/${project}-entry.js`,
-    mode: "development",
-    watch: true,
+
     plugins: [new HtmlWebpackPlugin({ filename: "iframe.html" })],
     module: {
       rules: [builderAlternatives[builder]],
@@ -139,14 +139,33 @@ module.exports = merge(
     },
   },
   projects[project],
-  // TODO: Parse truthy value better as this checks only for existence
-  process.env.COMPILE_LAZILY
+  process.env.COMPILE_LAZILY === "1"
     ? {
         experiments: {
           lazyCompilation: true,
         },
       }
     : {},
-  // TODO: Parse truthy value better as this checks only for existence
-  process.env.PROFILE_CPU ? cpuProfiler : {}
+  process.env.PROFILE_CPU === "1" ? cpuProfiler : {}
 );
+
+const developmentConfig = {
+  mode: "development",
+  watch: true,
+};
+
+const productionConfig = {
+  mode: "production",
+};
+
+switch (target) {
+  case "development":
+    module.exports = merge(commonConfig, developmentConfig);
+    break;
+  case "production":
+    module.exports = merge(commonConfig, productionConfig);
+    break;
+
+  default:
+    throw new Error(`Unknown target: ${target}`);
+}
