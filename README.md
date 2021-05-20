@@ -41,7 +41,7 @@ Currently the process to build and run the skeleton is as follows:
 1. Build the webpack project into dist, with the `PROJECT` environment variable set:
 
 ```
-export PROJECT=design-system; yarn webpack -w --mode development
+export PROJECT=design-system; yarn webpack
 ```
 
 2. Run a HTTP server on port 5000 out of `dist/`
