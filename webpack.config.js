@@ -3,8 +3,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { merge } = require("webpack-merge");
 
 const project = process.env.PROJECT || "template";
+const builder = process.env.BUILDER || "esbuild";
 
-const buildAlternatives = {
+const builderAlternatives = {
   esbuild: {
     test: /\.([t|j]sx?|svg)$/,
     loader: "esbuild-loader",
@@ -12,6 +13,30 @@ const buildAlternatives = {
     options: {
       loader: "tsx",
       target: "es2015",
+    },
+  },
+  swc: {
+    test: /\.([t|j]sx?)$/,
+    loader: "swc-loader",
+    exclude: /node_modules/,
+    options: {
+      jsc: {
+        parser: {
+          syntax: "typescript",
+        },
+      },
+    },
+  },
+  babel: {
+    test: /\.([t|j]sx?)$/,
+    loader: "babel-loader",
+    exclude: /node_modules/,
+    options: {
+      presets: [
+        ["@babel/preset-env", { targets: "defaults" }],
+        "@babel/preset-typescript",
+        "@babel/preset-react",
+      ],
     },
   },
 };
@@ -93,7 +118,7 @@ module.exports = merge(
     watch: true,
     plugins: [new HtmlWebpackPlugin({ filename: "iframe.html" })],
     module: {
-      rules: [buildAlternatives.esbuild],
+      rules: [builderAlternatives[builder]],
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],

@@ -44,6 +44,8 @@ Currently the process to build and run the skeleton is as follows:
 export PROJECT=design-system; yarn webpack
 ```
 
+> You can specify builder with the `BUILDER` parameter. It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
+
 2. Run a HTTP server on port 5000 out of `dist/`
 
 ```
