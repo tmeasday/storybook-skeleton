@@ -50,6 +50,7 @@ function composeConfiguration({
   builder,
   compileLazily,
   profileCpu,
+  enableSourceMaps,
 }) {
   let targetConfiguration;
 
@@ -80,7 +81,8 @@ function composeConfiguration({
           },
         }
       : {},
-    profileCpu ? parts.cpuProfiler : {}
+    profileCpu ? parts.cpuProfiler : {},
+    enableSourceMaps ? { devtool: "cheap-module-source-map" } : {}
   );
 }
 

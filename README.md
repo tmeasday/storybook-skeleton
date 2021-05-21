@@ -41,9 +41,12 @@ Currently the process to build and run the skeleton is as follows:
 export PROJECT=design-system; yarn start
 ```
 
-> You can specify builder with the `BUILDER` parameter. It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
+The following additional parameters are supported:
 
-> There's a flag for lazy compilation. Set `COMPILE_LAZILY=1` to enable the feature. `PROFILE_CPU` enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
+- `BUILDER=babel` - It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
+- `COMPILE_LAZILY=1` - Set to enable lazy compilation.
+- `PROFILE_CPU=1` - Enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
+- `ENABLE_SOURCE_MAPS=1` - Enables generation of source maps
 
 2. Run the prebuild manager:
 
