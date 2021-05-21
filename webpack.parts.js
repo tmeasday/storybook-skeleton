@@ -69,6 +69,9 @@ const projects = {
         },
       ],
     },
+    resolve: {
+      fallback: { path: require.resolve("path-browserify") },
+    },
   },
   "design-system": {
     module: {
