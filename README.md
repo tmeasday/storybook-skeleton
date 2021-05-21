@@ -47,6 +47,7 @@ The following additional parameters are supported:
 - `COMPILE_LAZILY=1` - Set to enable lazy compilation.
 - `PROFILE_CPU=1` - Enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
 - `ENABLE_SOURCE_MAPS=1` - Enables generation of source maps
+- `ENABLE_FS_CACHE=1` - Enabled webpack's file system level cache
 
 2. Run the prebuild manager:
 

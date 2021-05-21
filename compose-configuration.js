@@ -51,6 +51,7 @@ function composeConfiguration({
   compileLazily,
   profileCpu,
   enableSourceMaps,
+  enableFsCache,
 }) {
   let targetConfiguration;
 
@@ -82,7 +83,8 @@ function composeConfiguration({
         }
       : {},
     profileCpu ? parts.cpuProfiler : {},
-    enableSourceMaps ? { devtool: "cheap-module-source-map" } : {}
+    enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
+    enableFsCache ? { cache: { type: "filesystem" } } : {}
   );
 }
 
