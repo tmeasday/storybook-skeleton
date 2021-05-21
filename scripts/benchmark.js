@@ -8,36 +8,41 @@ async function main() {
 
   Object.keys(builderAlternatives).forEach((builder) => {
     [true, false].forEach((enableSourceMaps) => {
-      const productionConfiguration = composeConfiguration({
-        target: "production",
-        project: "design-system",
-        builder,
-        compileLazily: true,
-        profileCpu: true,
-        enableSourceMaps,
+      [true, false].forEach((compileLazily) => {
+        const productionConfiguration = composeConfiguration({
+          target: "production",
+          project: "design-system",
+          builder,
+          compileLazily,
+          profileCpu: true,
+          enableSourceMaps,
+        });
+
+        builds.push(
+          () =>
+            new Promise((resolve, reject) => {
+              console.log(
+                compileLazily ? "Compiling lazily" : "Not compiling lazily"
+              );
+              console.log(
+                `Source maps ${enableSourceMaps ? "enabled" : "disabled"}`
+              );
+              console.time(builder);
+              webpack(productionConfiguration, (err, stats) => {
+                if (err) {
+                  return reject(err);
+                }
+
+                if (stats.hasErrors()) {
+                  return reject(stats.toString("errors-only"));
+                }
+
+                console.timeEnd(builder);
+                resolve();
+              });
+            })
+        );
       });
-
-      builds.push(
-        () =>
-          new Promise((resolve, reject) => {
-            console.log(
-              `Source maps ${enableSourceMaps ? "enabled" : "disabled"}`
-            );
-            console.time(builder);
-            webpack(productionConfiguration, (err, stats) => {
-              if (err) {
-                return reject(err);
-              }
-
-              if (stats.hasErrors()) {
-                return reject(stats.toString("errors-only"));
-              }
-
-              console.timeEnd(builder);
-              resolve();
-            });
-          })
-      );
     });
   });
 
