@@ -3,20 +3,36 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "wp --target development",
+    "build": "wp --target production",
+    "benchmark": "node ./scripts/benchmark.js"
+  },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.13.0",
     "@snowpack/plugin-react-refresh": "^2.5.0",
     "@snowpack/plugin-typescript": "^1.2.1",
+    "babel-loader": "^8.2.2",
+    "cpuprofile-webpack-plugin": "^1.10.3",
     "css-loader": "^5.2.4",
     "esbuild-loader": "^2.13.0",
     "file-loader": "^6.2.0",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^5.3.1",
+    "prettier": "^2.3.0",
     "raw-loader": "^4.0.2",
     "react-svg-loader": "^3.0.3",
     "snowpack": "^3.4.0",
     "style-loader": "^2.0.0",
+    "swc-loader": "^0.1.14",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0"
+    "webpack-cli": "^4.7.0",
+    "webpack-merge": "^5.7.3",
+    "webpack-nano": "^1.1.1",
+    "webpack-plugin-serve": "^1.4.1"
   },
   "dependencies": {
     "@storybook/csf": "^0.0.1",
