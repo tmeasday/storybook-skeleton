@@ -18,6 +18,16 @@ const builderAlternatives = {
       jsc: {
         parser: {
           syntax: "typescript",
+          tsx: true,
+        },
+        transform: {
+          react: {
+            pragma: "React.createElement",
+            pragmaFrag: "React.Fragment",
+            throwIfNamespace: true,
+            development: false,
+            useBuiltins: false,
+          },
         },
       },
     },
