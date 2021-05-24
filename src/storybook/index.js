@@ -1,24 +1,27 @@
-import { renderStory } from './renderStory';
-import { composeStory } from './composeStory.ts';
-import { loadStory } from './loadStory.ts';
-import { setupChannel } from './setupChannel';
+import { renderStory } from "./renderStory";
+import { composeStory } from "./composeStory.ts";
+import { loadStory } from "./loadStory.ts";
+import { setupChannel } from "./setupChannel";
 
-export async function configure(context, storiesJson, globalConfig = {}) {
-  const { send } = setupChannel({ onSetCurrentStory: (storyId) => renderStoryId(storyId) });
+async function renderStoryId(importFn, storiesJson, globalConfig, storyId) {
+  const { story, meta } = await loadStory(importFn, storiesJson, storyId);
 
-  async function renderStoryId(storyId) {
-    const { story, meta } = await loadStory(context, storiesJson, storyId);
+  const composed = composeStory(story, meta, globalConfig);
 
-    const composed = composeStory(story, meta, globalConfig);
+  await renderStory(composed);
+}
 
-    await renderStory(composed);
-  }
+export async function configure(importFn, storiesJson, globalConfig = {}) {
+  const { send } = setupChannel({
+    onSetCurrentStory: (storyId) =>
+      renderStoryId(importFn, storiesJson, globalConfig, storyId),
+  });
 
   const params = new URLSearchParams(document.location.search);
-  const storyId = params.get('id');
+  const storyId = params.get("id");
 
   send({
-    type: 'setStories',
+    type: "setStories",
     args: [
       {
         ...storiesJson,
@@ -29,5 +32,6 @@ export async function configure(context, storiesJson, globalConfig = {}) {
     ],
   });
 
-  if (storyId) await renderStoryId(storyId);
+  if (storyId)
+    await renderStoryId(importFn, storiesJson, globalConfig, storyId);
 }
