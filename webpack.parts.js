@@ -1,4 +1,5 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
+var VirtualModulesPlugin = require("webpack-virtual-modules");
 
 const builderAlternatives = {
   esbuild: {
@@ -116,6 +117,17 @@ const projects = {
         },
       ],
     },
+    plugins: [
+      new VirtualModulesPlugin({
+        "./src/template-libraries.js": `
+          export const libraries = {
+            "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
+            "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
+            "./Page.stories.jsx": () => import('./template/Page.stories.jsx'),
+          };
+        `,
+      }),
+    ],
   },
 };
 

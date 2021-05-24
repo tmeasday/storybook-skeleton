@@ -33,7 +33,8 @@
     "webpack-cli": "^4.7.0",
     "webpack-merge": "^5.7.3",
     "webpack-nano": "^1.1.1",
-    "webpack-plugin-serve": "^1.4.1"
+    "webpack-plugin-serve": "^1.4.1",
+    "webpack-virtual-modules": "^0.4.3"
   },
   "dependencies": {
     "@storybook/csf": "^0.0.1",
