@@ -1,6 +1,6 @@
-import { loadCsfFile } from './loadCsfFile';
+import { loadCsfFile } from "./loadCsfFile";
 
-export async function loadStory(context, storiesJson, storyId) {
+export async function loadStory(importFn, storiesJson, storyId) {
   const storyData = storiesJson.stories[storyId];
 
   if (!storyData) {
@@ -8,7 +8,7 @@ export async function loadStory(context, storiesJson, storyId) {
   }
   console.debug(storyData);
 
-  const exports = await context(storyData.parameters.fileName);
+  const exports = await importFn(storyData.parameters.fileName);
   console.debug(exports);
   const stories = loadCsfFile(exports);
   console.debug(stories);
@@ -18,7 +18,7 @@ export async function loadStory(context, storiesJson, storyId) {
   if (!story) {
     throw new Error(`Didn't find a story matching storyId: ${storyId}
   
-  storyIds: ${Object.keys(stories).join(',')}`);
+  storyIds: ${Object.keys(stories).join(",")}`);
   }
 
   return { story, meta: exports.default };
