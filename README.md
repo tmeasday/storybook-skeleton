@@ -38,8 +38,10 @@ Currently the process to build and run the skeleton is as follows:
 1. Build the webpack project into dist, with the `PROJECT` environment variable set:
 
 ```
-export PROJECT=design-system; yarn start
+export PROJECT=design-system; yarn start-wps
 ```
+
+> Also start-wds works. wps uses **webpack-plugin-serve** while wds refers to **webpack-dev-server**.
 
 The following additional parameters are supported:
 
