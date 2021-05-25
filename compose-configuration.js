@@ -1,6 +1,5 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { WebpackPluginServe } = require("webpack-plugin-serve");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
 
@@ -18,27 +17,6 @@ const commonConfig = {
   },
 };
 
-const developmentConfig = ({ project }) => ({
-  entry: ["webpack-plugin-serve/client", `./src/${project}-entry.js`],
-  mode: "development",
-  watch: true,
-  plugins: [
-    new WebpackPluginServe({
-      port: 5000,
-      static: "./dist",
-      liveReload: true,
-      waitForBuild: true,
-      middleware: (app) =>
-        app.use(async (ctx, next) => {
-          await next();
-          ctx.set("Access-Control-Allow-Headers", "*");
-          ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-          ctx.set("Access-Control-Allow-Origin", "*");
-        }),
-    }),
-  ],
-});
-
 const productionConfig = ({ project }) => ({
   entry: `./src/${project}-entry.js`,
   mode: "production",
@@ -52,12 +30,15 @@ function composeConfiguration({
   profileCpu,
   enableSourceMaps,
   enableFsCache,
+  devServer,
 }) {
   let targetConfiguration;
 
   switch (target) {
     case "development":
-      targetConfiguration = developmentConfig;
+      targetConfiguration = () => ({
+        mode: "development",
+      });
       break;
     case "production":
       targetConfiguration = productionConfig;
@@ -84,7 +65,8 @@ function composeConfiguration({
       : {},
     profileCpu ? parts.cpuProfiler : {},
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
-    enableFsCache ? { cache: { type: "filesystem" } } : {}
+    enableFsCache ? { cache: { type: "filesystem" } } : {},
+    parts[devServer]({ project })
   );
 }
 

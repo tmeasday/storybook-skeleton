@@ -1,4 +1,5 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
+const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const builderAlternatives = {
   esbuild: {
@@ -45,6 +46,39 @@ const builderAlternatives = {
     },
   },
 };
+
+const wps = ({ project }) => ({
+  entry: ["webpack-plugin-serve/client", `./src/${project}-entry.js`],
+  watch: true,
+  plugins: [
+    new WebpackPluginServe({
+      port: 5000,
+      static: "./dist",
+      liveReload: true,
+      waitForBuild: true,
+      middleware: (app) =>
+        app.use(async (ctx, next) => {
+          await next();
+          ctx.set("Access-Control-Allow-Headers", "*");
+          ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+          ctx.set("Access-Control-Allow-Origin", "*");
+        }),
+    }),
+  ],
+});
+
+const wds = ({ project }) => ({
+  entry: [`./src/${project}-entry.js`],
+  devServer: {
+    port: 5000,
+    headers: {
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+    },
+    // TODO: How to set static directory for this one?
+  },
+});
 
 const projects = {
   chromatic: {
@@ -127,4 +161,6 @@ module.exports = {
   builderAlternatives,
   projects,
   cpuProfiler,
+  wps,
+  wds,
 };
