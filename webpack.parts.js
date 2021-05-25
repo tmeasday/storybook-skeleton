@@ -1,6 +1,8 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const VirtualModulesPlugin = require("webpack-virtual-modules");
 const process = require("process");
+const { WebpackPluginServe } = require("webpack-plugin-serve");
+const path = require("path");
 
 const builderAlternatives = {
   esbuild: {
@@ -48,30 +50,67 @@ const builderAlternatives = {
   },
 };
 
+const templateEntryImport = path.resolve(
+  __dirname,
+  "./src/template-entry-import"
+);
 const virtualModules = new VirtualModulesPlugin({
-  "./src/template-libraries.js": `
-    export const libraries = {
+  [templateEntryImport]: `
+    export const importFn = (path) => ({
       "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
       "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
-    };
+    })[path]();
   `,
 });
 process.on("SIGUSR2", () => {
   console.log("SIGUSR2");
   virtualModules.writeModule(
-    "./src/template-libraries.js",
+    templateEntryImport,
     `
-      export const libraries = {
+      export const importFn = (path) => ({
         "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
         "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
         "./Page.stories.jsx": () => import('./template/Page.stories.jsx'),
-      };
+      })[path]();
     `
   );
 });
 
+const wps = ({ project }) => ({
+  entry: ["webpack-plugin-serve/client", `./src/${project}-entry.js`],
+  watch: true,
+  plugins: [
+    new WebpackPluginServe({
+      port: 5000,
+      static: "./dist",
+      liveReload: true,
+      waitForBuild: true,
+      middleware: (app) =>
+        app.use(async (ctx, next) => {
+          await next();
+          ctx.set("Access-Control-Allow-Headers", "*");
+          ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+          ctx.set("Access-Control-Allow-Origin", "*");
+        }),
+    }),
+  ],
+});
+
+const wds = ({ project }) => ({
+  entry: [`./src/${project}-entry.js`],
+  devServer: {
+    port: 5000,
+    headers: {
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+    },
+    // TODO: How to set static directory for this one?
+  },
+});
+
 const projects = {
-  chromatic: {
+  chromatic: () => ({
     module: {
       rules: [
         {
@@ -106,8 +145,8 @@ const projects = {
     resolve: {
       fallback: { path: require.resolve("path-browserify") },
     },
-  },
-  "design-system": {
+  }),
+  "design-system": () => ({
     module: {
       rules: [
         {
@@ -130,8 +169,8 @@ const projects = {
         },
       ],
     },
-  },
-  template: {
+  }),
+  template: ({ importStyle }) => ({
     module: {
       rules: [
         {
@@ -141,7 +180,15 @@ const projects = {
       ],
     },
     plugins: [virtualModules],
-  },
+    // resolve: {
+    //   alias: {
+    //     [path.resolve(__dirname, "./src/template-entry-import")]: path.resolve(
+    //       __dirname,
+    //       `./src/template-entry-import-${importStyle}`
+    //     ),
+    //   },
+    // },
+  }),
 };
 
 const cpuProfiler = {
@@ -152,4 +199,6 @@ module.exports = {
   builderAlternatives,
   projects,
   cpuProfiler,
+  wps,
+  wds,
 };

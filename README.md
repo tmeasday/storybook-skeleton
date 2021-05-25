@@ -38,13 +38,16 @@ Currently the process to build and run the skeleton is as follows:
 1. Build the webpack project into dist, with the `PROJECT` environment variable set:
 
 ```
-export PROJECT=design-system; yarn start
+export PROJECT=design-system; yarn start-wps
 ```
+
+> Also start-wds works. wps uses **webpack-plugin-serve** while wds refers to **webpack-dev-server**.
 
 The following additional parameters are supported:
 
 - `BUILDER=babel` - It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
 - `COMPILE_LAZILY=1` - Set to enable lazy compilation.
+- `IMPORT=require-context` - How to import CSF files (template project only). Options: `require-context|dynamic|static|virtual`
 - `PROFILE_CPU=1` - Enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
 - `ENABLE_SOURCE_MAPS=1` - Enables generation of source maps
 - `ENABLE_FS_CACHE=1` - Enabled webpack's file system level cache

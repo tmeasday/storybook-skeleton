@@ -4,8 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "wp --target development",
-    "trigger-add-module": "pkill -SIGUSR2 -f wp",
+    "start-wps": "DEV_SERVER=wps wp --target development",
+    "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
+    "trigger-add-module": "pkill -SIGUSR2 -f wp webpack",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js"
   },
@@ -32,6 +33,7 @@
     "swc-loader": "^0.1.14",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
     "webpack-nano": "^1.1.1",
     "webpack-plugin-serve": "^1.4.1",
