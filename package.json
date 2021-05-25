@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "wp --target development",
+    "trigger-add-module": "pkill -SIGUSR2 -f wp",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js"
   },

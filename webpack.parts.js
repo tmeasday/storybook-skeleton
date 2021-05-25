@@ -1,5 +1,6 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
-var VirtualModulesPlugin = require("webpack-virtual-modules");
+const VirtualModulesPlugin = require("webpack-virtual-modules");
+const process = require("process");
 
 const builderAlternatives = {
   esbuild: {
@@ -46,6 +47,28 @@ const builderAlternatives = {
     },
   },
 };
+
+const virtualModules = new VirtualModulesPlugin({
+  "./src/template-libraries.js": `
+    export const libraries = {
+      "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
+      "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
+    };
+  `,
+});
+process.on("SIGUSR2", () => {
+  console.log("SIGUSR2");
+  virtualModules.writeModule(
+    "./src/template-libraries.js",
+    `
+      export const libraries = {
+        "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
+        "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
+        "./Page.stories.jsx": () => import('./template/Page.stories.jsx'),
+      };
+    `
+  );
+});
 
 const projects = {
   chromatic: {
@@ -117,17 +140,7 @@ const projects = {
         },
       ],
     },
-    plugins: [
-      new VirtualModulesPlugin({
-        "./src/template-libraries.js": `
-          export const libraries = {
-            "./Button.stories.jsx": () => import('./template/Button.stories.jsx'),
-            "./Header.stories.jsx": () => import('./template/Header.stories.jsx'),
-            "./Page.stories.jsx": () => import('./template/Page.stories.jsx'),
-          };
-        `,
-      }),
-    ],
+    plugins: [virtualModules],
   },
 };
 
