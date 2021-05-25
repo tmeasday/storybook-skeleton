@@ -1,5 +1,6 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
+const path = require("path");
 
 const builderAlternatives = {
   esbuild: {
@@ -81,7 +82,7 @@ const wds = ({ project }) => ({
 });
 
 const projects = {
-  chromatic: {
+  chromatic: () => ({
     module: {
       rules: [
         {
@@ -116,8 +117,8 @@ const projects = {
     resolve: {
       fallback: { path: require.resolve("path-browserify") },
     },
-  },
-  "design-system": {
+  }),
+  "design-system": () => ({
     module: {
       rules: [
         {
@@ -140,8 +141,8 @@ const projects = {
         },
       ],
     },
-  },
-  template: {
+  }),
+  template: ({ importStyle }) => ({
     module: {
       rules: [
         {
@@ -150,7 +151,15 @@ const projects = {
         },
       ],
     },
-  },
+    resolve: {
+      alias: {
+        [path.resolve(__dirname, "./src/template-entry-import")]: path.resolve(
+          __dirname,
+          `./src/template-entry-import-${importStyle}`
+        ),
+      },
+    },
+  }),
 };
 
 const cpuProfiler = {

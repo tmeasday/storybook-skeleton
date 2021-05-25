@@ -1,26 +1,10 @@
 import { configure } from "./storybook";
-
-// 1. Standard lazy require context
-const importFn = require.context(
-  "./template",
-  true,
-  /.*\.stories\.jsx$/,
-  "lazy"
-);
-
-// 2. Using a "shaped" async import
-// const importFn = async (name) => {
-//   const parsedName = name.match(/^\.\/(.*)\.jsx$/)[1];
-//   return import(`./template/${parsedName}.jsx`);
-// };
-
-// 3. Using a static async import
-// const libraries = {
-//   "./Button.stories.jsx": () => import(`./template/Button.stories.jsx`),
-//   "./Header.stories.jsx": () => import(`./template/Header.stories.jsx`),
-//   "./Page.stories.jsx": () => import(`./template/Page.stories.jsx`),
-// };
-// const importFn = (name) => libraries[name]();
+// This is aliased to one of:
+//  - `template-entry-import-require-context` - import via `require.context(..., 'lazy')`;
+//  - `template-entry-import-dynamic` - import via dynamic `await import()`
+//  - `template-entry-import-static` - import via static `await import()`
+//  - `template-entry-import-virtual` - import via static `await import()`, via virtual modules (TBD)
+import { importFn } from "./template-entry-import";
 
 const storiesJson = require("../stories-json/template.stories.json");
 

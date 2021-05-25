@@ -4,6 +4,7 @@ const composeConfiguration = require("./compose-configuration");
 module.exports = composeConfiguration({
   target: process.env.TARGET || argv.target,
   project: process.env.PROJECT || "template",
+  importStyle: process.env.IMPORT || "require-context",
   builder: process.env.BUILDER || "esbuild",
   compileLazily: process.env.COMPILE_LAZILY === "1",
   profileCpu: process.env.PROFILE_CPU === "1",

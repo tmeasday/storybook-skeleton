@@ -25,6 +25,7 @@ const productionConfig = ({ project }) => ({
 function composeConfiguration({
   target,
   project,
+  importStyle,
   builder,
   compileLazily,
   profileCpu,
@@ -54,7 +55,7 @@ function composeConfiguration({
         rules: [parts.builderAlternatives[builder]],
       },
     },
-    parts.projects[project],
+    parts.projects[project]({ importStyle }),
     targetConfiguration({ project }),
     compileLazily
       ? {
