@@ -1,0 +1,1 @@
+export const importFn = async () => import('./Page.stories')
