@@ -1,9 +1,11 @@
-import { configure } from './storybook';
+import { configure } from "./storybook";
 
-const globalConfig = require('../chromatic/.storybook/preview.js');
+// This is aliased to one of:
+//  - `chromatic-import-require-context` - import via `require.context(..., 'lazy')`;
+//  - `chromatic-import-static` - import via static `await import()`
+import { importFn } from "./chromatic-entry-import";
 
-const context = require.context('../chromatic/services/webapp', true, /.*\.stories\.js$/, 'lazy');
+import storiesJson from "../stories-json/chromatic.stories.json";
+import * as globalConfig from "../chromatic/.storybook/preview.js";
 
-const storiesJson = require('../stories-json/chromatic.stories.json');
-
-configure(context, storiesJson, globalConfig);
+configure(importFn, storiesJson, globalConfig);

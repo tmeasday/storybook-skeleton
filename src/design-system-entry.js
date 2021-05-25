@@ -1,9 +1,11 @@
-import { configure } from './storybook';
+import { configure } from "./storybook";
 
-const globalConfig = require('../design-system/.storybook/preview.js');
+// This is aliased to one of:
+//  - `design-system-import-require-context` - import via `require.context(..., 'lazy')`;
+//  - `design-system-import-static` - import via static `await import()`
+import { importFn } from "./design-system-entry-import";
 
-const context = require.context('../design-system/src', true, /.*\.stories\.[j|t]sx?$/, 'lazy');
-const storiesJson = require('../stories-json/design-system.stories.json');
-console.log(storiesJson);
+import storiesJson from "../stories-json/design-system.stories.json";
+import * as globalConfig from "../design-system/.storybook/preview.js";
 
-configure(context, storiesJson, globalConfig);
+configure(importFn, storiesJson, globalConfig);
