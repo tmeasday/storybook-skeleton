@@ -1,6 +1,5 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
-const path = require("path");
 
 const builderAlternatives = {
   esbuild: {
@@ -72,6 +71,7 @@ const wds = ({ project }) => ({
   entry: [`./src/${project}-entry.js`],
   devServer: {
     port: 5000,
+    hot: true,
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
