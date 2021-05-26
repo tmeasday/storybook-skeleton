@@ -1,5 +1,6 @@
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
+const path = require("path");
 
 const builderAlternatives = {
   esbuild: {

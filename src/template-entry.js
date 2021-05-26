@@ -1,6 +1,11 @@
-import { configure } from './storybook';
+import { configure } from "./storybook";
+// This is aliased to one of:
+//  - `template-entry-import-require-context` - import via `require.context(..., 'lazy')`;
+//  - `template-entry-import-dynamic` - import via dynamic `await import()`
+//  - `template-entry-import-static` - import via static `await import()`
+//  - `template-entry-import-virtual` - import via static `await import()`, via virtual modules (TBD)
+import { importFn } from "./template-entry-import";
 
-const context = require.context('./template', true, /.*\.stories\.js$/, 'lazy');
-const storiesJson = require('../stories-json/template.stories.json');
+const storiesJson = require("../stories-json/template.stories.json");
 
-configure(context, storiesJson);
+configure(importFn, storiesJson);

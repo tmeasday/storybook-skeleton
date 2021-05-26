@@ -47,6 +47,7 @@ The following additional parameters are supported:
 
 - `BUILDER=babel` - It accepts "babel", "esbuild", and "swc" and defaults to "esbuild".
 - `COMPILE_LAZILY=1` - Set to enable lazy compilation.
+- `IMPORT=require-context` - How to import CSF files (not all options are available for all projects). Options: `require-context|dynamic|static|virtual`
 - `PROFILE_CPU=1` - Enables [the CPU profiler](https://github.com/jantimon/cpuprofile-webpack-plugin) and emits a flamegraph that can be examined using Chrome Inspector.
 - `ENABLE_SOURCE_MAPS=1` - Enables generation of source maps
 - `ENABLE_FS_CACHE=1` - Enabled webpack's file system level cache

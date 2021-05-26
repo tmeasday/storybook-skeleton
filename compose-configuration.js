@@ -22,9 +22,21 @@ const productionConfig = ({ project }) => ({
   mode: "production",
 });
 
+const aliases = ({ project, importStyle }) => ({
+  resolve: {
+    alias: {
+      [path.resolve(__dirname, `./src/${project}-entry-import`)]: path.resolve(
+        __dirname,
+        `./src/${project}-entry-import-${importStyle}`
+      ),
+    },
+  },
+});
+
 function composeConfiguration({
   target,
   project,
+  importStyle,
   builder,
   compileLazily,
   profileCpu,
@@ -66,7 +78,8 @@ function composeConfiguration({
     profileCpu ? parts.cpuProfiler : {},
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
     enableFsCache ? { cache: { type: "filesystem" } } : {},
-    parts[devServer]({ project })
+    parts[devServer]({ project }),
+    aliases({ project, importStyle })
   );
 }
 
