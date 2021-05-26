@@ -1,5 +1,6 @@
 export const importFn = require.context(
   "./template",
   true,
-  /.*\.stories\.jsx$/
+  /.*\.stories\.jsx$/,
+  "lazy"
 );
