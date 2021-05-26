@@ -1,10 +1,10 @@
 // Taken from https://github.com/storybookjs/testing-react/blob/main/src/index.ts
 // Thanks @yannbf!
 
-import { defaultDecorateStory } from './decorateStory.ts';
-import { combineParameters } from './parameters.ts';
+import { defaultDecorateStory } from "./decorateStory.ts";
+import { combineParameters } from "./parameters.ts";
 
-import type { GlobalConfig, Meta, Story, StoryContext } from './types';
+import type { GlobalConfig, Meta, Story, StoryContext } from "./types";
 
 let globalStorybookConfig = {};
 
@@ -58,7 +58,7 @@ export function composeStory<GenericArgs>(
   meta: Meta<GenericArgs>,
   globalConfig: GlobalConfig = globalStorybookConfig
 ) {
-  if (typeof story !== 'function') {
+  if (typeof story !== "function") {
     throw new Error(
       `Cannot compose story due to invalid format. @storybook/testing-react expected a function but received ${typeof story} instead.`
     );
@@ -68,7 +68,7 @@ export function composeStory<GenericArgs>(
     const { passArgsFirst = true } = context.parameters;
     if (!passArgsFirst) {
       throw new Error(
-        'composeStory does not support legacy style stories (with passArgsFirst = false).'
+        "composeStory does not support legacy style stories (with passArgsFirst = false)."
       );
     }
     return story(context.args as GenericArgs, context);
@@ -80,7 +80,10 @@ export function composeStory<GenericArgs>(
     ...(globalConfig?.decorators || []),
   ];
 
-  const decorated = defaultDecorateStory(finalStoryFn as any, combinedDecorators as any);
+  const decorated = defaultDecorateStory(
+    finalStoryFn as any,
+    combinedDecorators as any
+  );
 
   const defaultGlobals = Object.entries(
     (globalConfig.globalTypes || {}) as Record<string, { defaultValue: any }>
@@ -91,22 +94,42 @@ export function composeStory<GenericArgs>(
     return acc;
   }, {} as Record<string, { defaultValue: any }>);
 
-  return ((extraArgs: Record<string, any>) =>
+  const initialContext = {
+    id: "",
+    kind: "",
+    name: "",
+    argTypes: globalConfig.argTypes || {},
+    globals: defaultGlobals,
+    parameters: combineParameters(
+      globalConfig.parameters || {},
+      meta.parameters || {},
+      story.story?.parameters || story.parameters || {}
+    ),
+    args: {
+      ...meta.args,
+      ...(story.story?.args || story.args),
+    },
+  };
+
+  const composedStory = ((runtimeContext: StoryContext) =>
     decorated({
-      id: '',
-      kind: '',
-      name: '',
-      argTypes: globalConfig.argTypes || {},
-      globals: defaultGlobals,
-      parameters: combineParameters(
-        globalConfig.parameters || {},
-        meta.parameters || {},
-        story.story?.parameters || story.parameters || {}
-      ),
-      args: {
-        ...meta.args,
-        ...(story.story?.args || story.args),
-        ...extraArgs,
-      },
+      ...initialContext,
+      ...runtimeContext,
     })) as Story<Partial<GenericArgs>>;
+
+  const combinedLoaders = [
+    ...(story.story?.loaders || story.loaders || []),
+    ...(meta?.loaders || []),
+    ...(globalConfig?.loaders || []),
+  ];
+
+  composedStory.getLoaded = async () =>
+    Object.assign(
+      {},
+      ...(await Promise.all(
+        combinedLoaders.map((loader) => loader(initialContext))
+      ))
+    );
+
+  return composedStory;
 }
