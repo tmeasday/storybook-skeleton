@@ -83,12 +83,12 @@ module.exports = function (source) {
     `export default {\n  ${loadersLine}`
   );
 
-  console.log({
-    storyRequest,
-    componentRequest,
-    componentImportSymbolMap,
-    loadersLine,
-  });
+  // console.log({
+  //   storyRequest,
+  //   componentRequest,
+  //   componentImportSymbolMap,
+  //   loadersLine,
+  // });
 
   // console.log(newSource);
 
