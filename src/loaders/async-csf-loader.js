@@ -15,7 +15,7 @@ module.exports = function (source) {
   )}`;
   // Looks like `import MyComponent, { MyComponentPure } from './MyComponent.jsx';`
   const componentImportRegex = new RegExp(
-    `import ([^{},;]+)?,?\s*(\{[^{}]+\})? from ['"]${componentRequest}['"];`,
+    `import ([^{},;]+)?,?\\s*(\{[^{}]+\})? from ['"]${componentRequest}['"];`,
     "ms"
   );
   // Looks like `MyComponent` or `{ MyComponent }`
@@ -57,15 +57,15 @@ module.exports = function (source) {
       // 4. Replace all instances of `<MyComponentRenamed` (assumed to be in story functions)
       // with `<AsyncLoaderProxy AsyncLoaderComponent={arguments[1].loaded.MyComponent}`.
       newSource = newSource.replace(
-        new RegExp(`<${symbolName}`, "g"),
+        new RegExp(`<${symbolName}(?=[\\s>])`, "g"),
         `<AsyncLoaderProxy AsyncLoaderComponent={context.loaded.${exportName}}`
       );
 
-      // 5. Replace all instances of `</MyComponentRenamed` (assumed to be in story functions)
-      // with `</AsyncLoaderProxy`.
+      // 5. Replace all instances of `</MyComponentRenamed>` (assumed to be in story functions)
+      // with `</AsyncLoaderProxy>`.
       newSource = newSource.replace(
-        new RegExp(`</${symbolName}`, "g"),
-        `</AsyncLoaderProxy`
+        new RegExp(`</${symbolName}>`, "g"),
+        `</AsyncLoaderProxy>`
       );
     }
   );
