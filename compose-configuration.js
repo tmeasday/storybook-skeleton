@@ -37,6 +37,7 @@ function composeConfiguration({
   target,
   project,
   importStyle,
+  vertical,
   builder,
   compileLazily,
   profileCpu,
@@ -79,7 +80,8 @@ function composeConfiguration({
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
     enableFsCache ? { cache: { type: "filesystem" } } : {},
     parts[devServer]({ project }),
-    aliases({ project, importStyle })
+    aliases({ project, importStyle }),
+    vertical ? parts.splitVertically : {}
   );
 }
 

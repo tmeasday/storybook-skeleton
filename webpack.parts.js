@@ -1,3 +1,4 @@
+const path = require("path");
 const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
 
@@ -158,10 +159,23 @@ const cpuProfiler = {
   plugins: [new CpuProfilerWebpackPlugin()],
 };
 
+const splitVertically = {
+  module: {
+    rules: [
+      {
+        test: /\.stories\.m?[t|j]sx?$/,
+        loader: path.resolve("src/loaders/async-csf-loader"),
+        exclude: /node_modules/,
+      },
+    ],
+  },
+};
+
 module.exports = {
   builderAlternatives,
   projects,
   cpuProfiler,
   wps,
   wds,
+  splitVertically,
 };
