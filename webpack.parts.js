@@ -1,5 +1,4 @@
 const path = require("path");
-const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const builderAlternatives = {
@@ -155,8 +154,11 @@ const projects = {
   },
 };
 
-const cpuProfiler = {
-  plugins: [new CpuProfilerWebpackPlugin()],
+const cpuProfiler = () => {
+  const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
+  return {
+    plugins: [new CpuProfilerWebpackPlugin()],
+  };
 };
 
 const splitVertically = {

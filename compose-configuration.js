@@ -76,7 +76,7 @@ function composeConfiguration({
           },
         }
       : {},
-    profileCpu ? parts.cpuProfiler : {},
+    profileCpu ? parts.cpuProfiler() : {},
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
     enableFsCache ? { cache: { type: "filesystem" } } : {},
     parts[devServer]({ project }),
