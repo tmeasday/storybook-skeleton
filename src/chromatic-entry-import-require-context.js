@@ -22,6 +22,6 @@ const contexts = {
 };
 
 export const importFn = (name) => {
-  const [_, contextName, path] = name.split("/", 3);
-  return contexts[contextName](`./${path}`);
+  const [_, contextName] = name.split("/", 2);
+  return contexts[contextName](name.replace(`./${contextName}`, "."));
 };
