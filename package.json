@@ -7,7 +7,8 @@
     "start-wps": "DEV_SERVER=wps wp --target development",
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
     "build": "wp --target production",
-    "benchmark": "node ./scripts/benchmark.js"
+    "benchmark": "node ./scripts/benchmark.js",
+    "start-manager": "http-server composing-storybook/storybook-static"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -23,6 +24,7 @@
     "file-loader": "^6.2.0",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^5.3.1",
+    "http-server": "^0.12.3",
     "prettier": "^2.3.0",
     "raw-loader": "^4.0.2",
     "react-svg-loader": "^3.0.3",

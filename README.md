@@ -56,7 +56,7 @@ The following additional parameters are supported:
 2. Run the prebuild manager:
 
 ```
-npx http-server composing-storybook/storybook-static
+yarn start-manager
 ```
 
 4. Browse to the URL from step 3: http://localhost:8080

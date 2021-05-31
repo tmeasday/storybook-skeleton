@@ -12,7 +12,7 @@ const builderAlternatives = {
     },
   },
   swc: {
-    test: /\.([t|j]sx?)$/,
+    test: /\.([t|j]sx?|svg)$/,
     loader: "swc-loader",
     exclude: /node_modules/,
     options: {
@@ -34,12 +34,12 @@ const builderAlternatives = {
     },
   },
   babel: {
-    test: /\.([t|j]sx?)$/,
+    test: /\.([t|j]sx?|svg)$/,
     loader: "babel-loader",
     exclude: /node_modules/,
     options: {
       presets: [
-        ["@babel/preset-env", { targets: "defaults" }],
+        ["@babel/preset-env", { targets: { chrome: "90" } }],
         "@babel/preset-typescript",
         "@babel/preset-react",
       ],
