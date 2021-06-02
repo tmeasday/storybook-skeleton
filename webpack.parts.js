@@ -8,7 +8,7 @@ const builderAlternatives = {
     exclude: /node_modules/,
     options: {
       loader: "tsx",
-      target: "es2015",
+      target: "chrome90",
     },
   },
   swc: {
@@ -16,6 +16,9 @@ const builderAlternatives = {
     loader: "swc-loader",
     exclude: /node_modules/,
     options: {
+      env: {
+        target: { chrome: "90" },
+      },
       jsc: {
         parser: {
           syntax: "typescript",
