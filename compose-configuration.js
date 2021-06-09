@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WebpackCdnPlugin = require("webpack-cdn-plugin");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
 
@@ -44,6 +45,7 @@ function composeConfiguration({
   enableSourceMaps,
   enableFsCache,
   devServer,
+  enableCdn,
 }) {
   let targetConfiguration;
 
@@ -81,7 +83,38 @@ function composeConfiguration({
     enableFsCache ? { cache: { type: "filesystem" } } : {},
     parts[devServer]({ project }),
     aliases({ project, importStyle }),
-    vertical ? parts.splitVertically : {}
+    vertical ? parts.splitVertically : {},
+    enableCdn
+      ? {
+          externals: {
+            lodash: "lodash",
+            react: "React",
+            "react-dom": "ReactDOM",
+          },
+          plugins: [
+            new WebpackCdnPlugin({
+              modules: [
+                {
+                  name: "lodash",
+                  var: "_",
+                  path: "lodash.min.js",
+                },
+                {
+                  name: "react",
+                  var: "React",
+                  path: "umd/react.development.js",
+                },
+                {
+                  name: "react-dom",
+                  var: "ReactDOM",
+                  path: "umd/react-dom.development.js",
+                },
+              ],
+              publicPath: "/node_modules",
+            }),
+          ],
+        }
+      : {}
   );
 }
 

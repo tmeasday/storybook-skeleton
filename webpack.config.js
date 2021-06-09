@@ -12,4 +12,5 @@ module.exports = composeConfiguration({
   enableSourceMaps: process.env.ENABLE_SOURCE_MAPS === "1",
   enableFsCache: process.env.ENABLE_FS_CACHE === "1",
   devServer: process.env.DEV_SERVER || "wds",
+  enableCdn: process.env.ENABLE_CDN === "1",
 });
