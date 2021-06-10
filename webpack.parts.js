@@ -124,12 +124,12 @@ const projects = {
   "design-system": {
     module: {
       rules: [
-        {
-          test: /\.m?[t|j]sx?$/,
-          resolve: {
-            fullySpecified: false,
-          },
-        },
+        // {
+        //   test: /\.m?[t|j]sx?$/,
+        //   resolve: {
+        //     fullySpecified: false,
+        //   },
+        // },
         {
           test: /\.css$/,
           use: ["style-loader", "css-loader"],
