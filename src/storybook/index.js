@@ -20,6 +20,12 @@ export async function configure(importFn, storiesJson, globalConfig = {}) {
   const params = new URLSearchParams(document.location.search);
   const storyId = params.get("id");
 
+  window.sb = {
+    listStories: () => console.log(Object.keys(storiesJson.stories)),
+    importStory: (storyId) =>
+      importFn(storiesJson.stories[storyId].parameters.fileName),
+  };
+
   send({
     type: "setStories",
     args: [
