@@ -26,9 +26,9 @@ const productionConfig = ({ project }) => ({
 const aliases = ({ project, importStyle }) => ({
   resolve: {
     alias: {
-      [path.resolve(__dirname, `./projects/${project}/import`)]: path.resolve(
+      [path.resolve(__dirname, `./projects/${project}/entry-import`)]: path.resolve(
         __dirname,
-        `./projects/${project}/import-${importStyle}`
+        `./projects/${project}/entry-import-${importStyle}`
       ),
     },
   },
@@ -69,7 +69,7 @@ async function composeConfiguration({
         rules: [parts.builderAlternatives[builder]],
       },
     },
-    await require(`./projects/${project}/webpack.js`),
+    await require(`./projects/${project}/webpack.config.js`)(),
     targetConfiguration({ project }),
     compileLazily
       ? {

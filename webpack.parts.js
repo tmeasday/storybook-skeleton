@@ -145,16 +145,6 @@ const projects = {
       ],
     },
   }),
-  template: () => ({
-    module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: ["style-loader", "css-loader"],
-        },
-      ],
-    },
-  }),
 };
 
 const cpuProfiler = () => {
