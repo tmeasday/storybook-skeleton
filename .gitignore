@@ -1,6 +1,7 @@
 node_modules
 dist
 profiles
+build
 
 # symlinks
 design-system
