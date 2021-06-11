@@ -19,22 +19,22 @@ const commonConfig = {
 };
 
 const productionConfig = ({ project }) => ({
-  entry: `./src/${project}-entry.js`,
+  entry: `./projects/${project}/entry.js`,
   mode: "production",
 });
 
 const aliases = ({ project, importStyle }) => ({
   resolve: {
     alias: {
-      [path.resolve(__dirname, `./src/${project}-entry-import`)]: path.resolve(
+      [path.resolve(__dirname, `./projects/${project}/import`)]: path.resolve(
         __dirname,
-        `./src/${project}-entry-import-${importStyle}`
+        `./projects/${project}/import-${importStyle}`
       ),
     },
   },
 });
 
-function composeConfiguration({
+async function composeConfiguration({
   target,
   project,
   importStyle,
@@ -69,7 +69,7 @@ function composeConfiguration({
         rules: [parts.builderAlternatives[builder]],
       },
     },
-    parts.projects[project],
+    await require(`./projects/${project}/webpack.js`),
     targetConfiguration({ project }),
     compileLazily
       ? {

@@ -51,7 +51,7 @@ const builderAlternatives = {
 };
 
 const wps = ({ project }) => ({
-  entry: ["webpack-plugin-serve/client", `./src/${project}-entry.js`],
+  entry: ["webpack-plugin-serve/client", `./projects/${project}/entry.js`],
   watch: true,
   plugins: [
     new WebpackPluginServe({
@@ -71,7 +71,7 @@ const wps = ({ project }) => ({
 });
 
 const wds = ({ project }) => ({
-  entry: [`./src/${project}-entry.js`],
+  entry: [`./projects/${project}/entry.js`],
   devServer: {
     port: 5000,
     hot: true,
@@ -85,7 +85,7 @@ const wds = ({ project }) => ({
 });
 
 const projects = {
-  chromatic: {
+  chromatic: () => ({
     module: {
       rules: [
         {
@@ -120,8 +120,8 @@ const projects = {
     resolve: {
       fallback: { path: require.resolve("path-browserify") },
     },
-  },
-  "design-system": {
+  }),
+  "design-system":  () => ({
     module: {
       rules: [
         // {
@@ -144,8 +144,8 @@ const projects = {
         },
       ],
     },
-  },
-  template: {
+  }),
+  template: () => ({
     module: {
       rules: [
         {
@@ -154,7 +154,7 @@ const projects = {
         },
       ],
     },
-  },
+  }),
 };
 
 const cpuProfiler = () => {

@@ -46,6 +46,7 @@
     "path-browserify": "^1.0.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "telejson": "^5.3.1"
+    "telejson": "^5.3.1",
+    "typescript": "^4.3.2"
   }
 }

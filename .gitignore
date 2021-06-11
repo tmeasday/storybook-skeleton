@@ -5,3 +5,5 @@ profiles
 # symlinks
 design-system
 chromatic
+
+projects/shopify-web
