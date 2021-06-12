@@ -51,7 +51,10 @@ const builderAlternatives = {
 };
 
 const wps = ({ project }) => ({
-  entry: ["webpack-plugin-serve/client", `./projects/${project}/entry.js`],
+  entry: [
+    "webpack-plugin-serve/client",
+    path.resolve(__dirname, `./projects/${project}/entry.js`),
+  ],
   watch: true,
   plugins: [
     new WebpackPluginServe({
@@ -71,7 +74,7 @@ const wps = ({ project }) => ({
 });
 
 const wds = ({ project }) => ({
-  entry: [`./projects/${project}/entry.js`],
+  entry: [path.resolve(__dirname, `./projects/${project}/entry.js`)],
   devServer: {
     port: 5000,
     hot: true,

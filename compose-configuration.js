@@ -19,17 +19,18 @@ const commonConfig = {
 };
 
 const productionConfig = ({ project }) => ({
-  entry: `./projects/${project}/entry.js`,
+  entry: path.resolve(__dirname, `./projects/${project}/entry.js`),
   mode: "production",
 });
 
 const aliases = ({ project, importStyle }) => ({
   resolve: {
     alias: {
-      [path.resolve(__dirname, `./projects/${project}/entry-import`)]: path.resolve(
-        __dirname,
-        `./projects/${project}/entry-import-${importStyle}`
-      ),
+      [path.resolve(__dirname, `./projects/${project}/entry-import`)]:
+        path.resolve(
+          __dirname,
+          `./projects/${project}/entry-import-${importStyle}`
+        ),
     },
   },
 });
@@ -48,6 +49,8 @@ async function composeConfiguration({
   enableCdn,
 }) {
   let targetConfiguration;
+
+  process.chdir(`./projects/${project}/web`);
 
   switch (target) {
     case "development":
