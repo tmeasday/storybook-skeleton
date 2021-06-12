@@ -67,11 +67,7 @@ async function composeConfiguration({
 
   return merge(
     commonConfig,
-    {
-      module: {
-        rules: [parts.builderAlternatives[builder]],
-      },
-    },
+    parts.builderAlternatives[builder],
     await require(`./projects/${project}/webpack.config.js`)(),
     targetConfiguration({ project }),
     compileLazily

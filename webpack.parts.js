@@ -3,51 +3,70 @@ const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const builderAlternatives = {
   esbuild: {
-    test: /\.([t|j]sx?|svg)$/,
-    loader: "esbuild-loader",
-    exclude: /node_modules/,
-    options: {
-      loader: "tsx",
-      target: "chrome90",
-    },
-  },
-  swc: {
-    test: /\.([t|j]sx?|svg)$/,
-    loader: "swc-loader",
-    exclude: /node_modules/,
-    options: {
-      env: {
-        target: { chrome: "90" },
-      },
-      jsc: {
-        parser: {
-          syntax: "typescript",
-          tsx: true,
-        },
-        transform: {
-          react: {
-            pragma: "React.createElement",
-            pragmaFrag: "React.Fragment",
-            throwIfNamespace: true,
-            development: false,
-            useBuiltins: false,
+    module: {
+      rules: [
+        {
+          test: /\.([t|j]sx?|svg)$/,
+          loader: "esbuild-loader",
+          exclude: /node_modules/,
+          options: {
+            loader: "tsx",
+            target: "chrome90",
           },
         },
-      },
-    },
-  },
-  babel: {
-    test: /\.([t|j]sx?|svg)$/,
-    loader: "babel-loader",
-    exclude: /node_modules/,
-    options: {
-      presets: [
-        ["@babel/preset-env", { targets: { chrome: "90" } }],
-        "@babel/preset-typescript",
-        "@babel/preset-react",
       ],
     },
   },
+  swc: {
+    module: {
+      rules: [
+        {
+          test: /\.([t|j]sx?|svg)$/,
+          loader: "swc-loader",
+          exclude: /node_modules/,
+          options: {
+            env: {
+              target: { chrome: "90" },
+            },
+            jsc: {
+              parser: {
+                syntax: "typescript",
+                tsx: true,
+              },
+              transform: {
+                react: {
+                  pragma: "React.createElement",
+                  pragmaFrag: "React.Fragment",
+                  throwIfNamespace: true,
+                  development: false,
+                  useBuiltins: false,
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+  },
+  babel: {
+    module: {
+      rules: [
+        {
+          test: /\.([t|j]sx?|svg)$/,
+          loader: "babel-loader",
+          exclude: /node_modules/,
+          options: {
+            presets: [
+              ["@babel/preset-env", { targets: { chrome: "90" } }],
+              "@babel/preset-typescript",
+              "@babel/preset-react",
+            ],
+          },
+        },
+      ],
+    },
+  },
+  none: {},
 };
 
 const wps = ({ project }) => ({
@@ -124,7 +143,7 @@ const projects = {
       fallback: { path: require.resolve("path-browserify") },
     },
   }),
-  "design-system":  () => ({
+  "design-system": () => ({
     module: {
       rules: [
         // {
