@@ -44,8 +44,10 @@
   "dependencies": {
     "@storybook/csf": "^0.0.1",
     "@storybook/csf-tools": "^6.3.0-alpha.30",
+    "glob-base": "^0.3.0",
     "globby": "^11.0.3",
     "handlebars": "^4.7.7",
+    "micromatch": "^4.0.4",
     "path-browserify": "^1.0.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
