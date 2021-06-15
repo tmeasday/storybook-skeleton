@@ -11,7 +11,7 @@ const entrypointsVirtualModules = async ({ stories, importStyle }) => {
   const entry = `
   import { configure } from './skeleton/src/storybook';
   
-  import * as globalConfig from './.storybook/preview.js';
+  import * as globalConfig from './.storybook/preview';
   
   const storiesJson = ${JSON.stringify(await extractStoriesJson({ stories }))};
   
@@ -76,6 +76,7 @@ const builderAlternatives = {
       ],
     },
   },
+  none: {},
 };
 
 const wps = {
