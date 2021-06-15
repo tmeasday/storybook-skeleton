@@ -1,5 +1,9 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require(`${path.join(
+  process.cwd(),
+  "node_modules",
+  "html-webpack-plugin"
+)}`);
 const WebpackCdnPlugin = require("webpack-cdn-plugin");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
@@ -8,9 +12,10 @@ const commonConfig = {
   plugins: [new HtmlWebpackPlugin({ filename: "iframe.html" })],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    // alias: {
-    //   react: path.resolve(__dirname, "node_modules/react"),
-    // },
+    alias: {
+      react: path.resolve(process.cwd(), "node_modules/react"),
+      ["react-dom"]: path.resolve(process.cwd(), "node_modules/react-dom"),
+    },
   },
   output: {
     filename: "[name].bundle.js",
