@@ -1,29 +1,29 @@
-const contexts = [
-  require.context(
+const contexts = {
+  components: require.context(
     "../chromatic/services/webapp/components",
     true,
     /\.stories\.js$/,
     "lazy"
   ),
-  require.context(
+  containers: require.context(
     "../chromatic/services/webapp/containers",
     true,
     /\.stories\.js$/,
     "lazy"
   ),
-  require.context(
+  layouts: require.context(
     "../chromatic/services/webapp/layouts",
     true,
     /\.stories\.js$/,
     "lazy"
   ),
-  require.context(
+  screens: require.context(
     "../chromatic/services/webapp/screens",
     true,
     /\.stories\.js$/,
     "lazy"
   ),
-];
+};
 
 export const importFn = (name) => {
   const [_, contextName] = name.split("/", 2);
