@@ -8,9 +8,9 @@ const commonConfig = {
   plugins: [new HtmlWebpackPlugin({ filename: "iframe.html" })],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    alias: {
-      react: path.resolve(__dirname, "node_modules/react"),
-    },
+    // alias: {
+    //   react: path.resolve(__dirname, "node_modules/react"),
+    // },
   },
   output: {
     filename: "[name].bundle.js",
@@ -18,25 +18,9 @@ const commonConfig = {
   },
 };
 
-const productionConfig = ({ project }) => ({
-  entry: `./src/${project}-entry.js`,
-  mode: "production",
-});
-
-const aliases = ({ project, importStyle }) => ({
-  resolve: {
-    alias: {
-      [path.resolve(__dirname, `./src/${project}-entry-import`)]: path.resolve(
-        __dirname,
-        `./src/${project}-entry-import-${importStyle}`
-      ),
-    },
-  },
-});
-
-function composeConfiguration({
+async function composeConfiguration({
+  storybookConfig,
   target,
-  project,
   importStyle,
   vertical,
   builder,
@@ -51,38 +35,47 @@ function composeConfiguration({
 
   switch (target) {
     case "development":
-      targetConfiguration = () => ({
-        mode: "development",
-      });
+      targetConfiguration = { mode: "development" };
       break;
     case "production":
-      targetConfiguration = productionConfig;
+      targetConfiguration = {
+        entry: parts.SKELETON_ENTRY,
+        mode: "production",
+      };
       break;
     default:
       throw new Error(`Unknown target: ${target}`);
   }
 
-  return merge(
+  let projectConfig;
+  if (!storybookConfig.skeletonWebpackConfig) {
+    throw new Error(
+      `Didn't find \`skeletonWebpackConfig\` in \`.storybook/main.js\``
+    );
+  } else if (typeof storybookConfig.skeletonWebpackConfig === "function") {
+    projectConfig = await storybookConfig.skeletonWebpackConfig();
+  } else {
+    projectConfig = storybookConfig.skeletonWebpackConfig;
+  }
+
+  const config = merge(
     commonConfig,
+    projectConfig,
+    await parts.entrypointsVirtualModules({
+      stories: storybookConfig.stories,
+      importStyle,
+    }),
+    targetConfiguration,
+    parts[devServer],
     {
       module: {
         rules: [parts.builderAlternatives[builder]],
       },
     },
-    parts.projects[project],
-    targetConfiguration({ project }),
-    compileLazily
-      ? {
-          experiments: {
-            lazyCompilation: true,
-          },
-        }
-      : {},
+    compileLazily ? { experiments: { lazyCompilation: true } } : {},
     profileCpu ? parts.cpuProfiler() : {},
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},
     enableFsCache ? { cache: { type: "filesystem" } } : {},
-    parts[devServer]({ project }),
-    aliases({ project, importStyle }),
     vertical ? parts.splitVertically : {},
     enableCdn
       ? {
@@ -116,6 +109,9 @@ function composeConfiguration({
         }
       : {}
   );
+
+  console.log(config);
+  return config;
 }
 
 module.exports = composeConfiguration;
