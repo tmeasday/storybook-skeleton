@@ -42,7 +42,7 @@ const builderAlternatives = {
     exclude: /node_modules/,
     options: {
       presets: [
-        ["@babel/preset-env", { targets: { chrome: "90" } }],
+        ["@babel/preset-env"],
         "@babel/preset-typescript",
         "@babel/preset-react",
       ],
@@ -89,12 +89,6 @@ const projects = {
     module: {
       rules: [
         {
-          test: /\.(m?[t|j]s)$/,
-          resolve: {
-            fullySpecified: false,
-          },
-        },
-        {
           test: /\.svg$/,
           loader: "react-svg-loader",
           options: {
@@ -115,10 +109,15 @@ const projects = {
           //   helperDirs: path.join(__dirname, '..','lib', 'emails', 'helpers'),
           // },
         },
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto",
+        },
       ],
     },
     resolve: {
-      fallback: { path: require.resolve("path-browserify") },
+      extensions: [".mjs", ".js", ".ts", ".json"],
     },
   },
   "design-system": {
