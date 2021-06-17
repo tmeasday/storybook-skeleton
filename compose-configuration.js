@@ -62,7 +62,7 @@ function composeConfiguration({
       throw new Error(`Unknown target: ${target}`);
   }
 
-  return merge(
+  const config = merge(
     commonConfig,
     {
       module: {
@@ -116,6 +116,18 @@ function composeConfiguration({
         }
       : {}
   );
+
+  if (profileCpu) {
+    const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+    const smp = new SpeedMeasurePlugin({
+      // Experimental and not totally accurate
+      granularLoaderData: true,
+    });
+
+    return smp.wrap(config);
+  }
+
+  return config;
 }
 
 module.exports = composeConfiguration;
