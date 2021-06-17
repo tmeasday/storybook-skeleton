@@ -8,14 +8,15 @@ const SKELETON_ENTRY = "./skeleton-entry.js";
 
 // NOTE: assumes directory structure (skeleton/ sibiling of .storybook/)
 const entrypointsVirtualModules = async ({ stories, importStyle }) => {
+  const storiesJson = await extractStoriesJson({ stories });
   const entry = `
   import { configure } from './skeleton/src/storybook';
   
   import * as globalConfig from './.storybook/preview';
   
-  const storiesJson = ${JSON.stringify(await extractStoriesJson({ stories }))};
+  const storiesJson = ${JSON.stringify(storiesJson)};
   
-  ${importFn({ stories, importStyle })};
+  ${importFn({ stories, importStyle, storiesJson })};
   
   configure(importFn, storiesJson, globalConfig);`;
   // console.log(entry);

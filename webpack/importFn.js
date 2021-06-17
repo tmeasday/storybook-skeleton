@@ -62,9 +62,35 @@ const contextImportFn = ({ stories, importStyle }) => {
   `;
 };
 
-const importFn = ({ stories, importStyle }) => {
+const staticImportFn = ({ storiesJson }) => {
+  const pathMap = Object.fromEntries(
+    Object.values(storiesJson.stories).map((story) => [
+      story.parameters.fileName,
+      // fileName is relative to .storybook, webpack wants it relative to CWD
+      `./${path.relative(
+        process.cwd(),
+        path.resolve("./storybook", story.parameters.fileName)
+      )}`,
+    ])
+  );
+  return `
+    const imports = {
+      ${Object.entries(pathMap)
+        .map(([sbPath, wpPath]) => `["${sbPath}"]: () => import("${wpPath}")`)
+        .join(",\n")}
+    };
+
+    const importFn = (path) => imports[path]();
+  `;
+};
+
+const importFn = ({ stories, importStyle, storiesJson }) => {
   if (["require-context", "lazy-require-context"].includes(importStyle)) {
     return contextImportFn({ stories, importStyle });
+  }
+
+  if (importStyle === "static") {
+    return staticImportFn({ storiesJson });
   }
 };
 
