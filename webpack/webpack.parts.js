@@ -6,9 +6,13 @@ const { importFn } = require("./importFn");
 
 const SKELETON_ENTRY = "./skeleton-entry.js";
 
-// NOTE: assumes directory structure (skeleton/ sibiling of .storybook/)
-const entrypointsVirtualModules = async ({ stories, importStyle }) => {
-  const storiesJson = await extractStoriesJson({ stories });
+const entrypointsVirtualModules = async ({
+  stories,
+  importStyle,
+  configDir,
+  projectDir,
+}) => {
+  const storiesJson = await extractStoriesJson({ stories, configDir });
   const entry = `
   import { configure } from './skeleton/src/storybook';
   
@@ -16,15 +20,15 @@ const entrypointsVirtualModules = async ({ stories, importStyle }) => {
   
   const storiesJson = ${JSON.stringify(storiesJson)};
   
-  ${importFn({ stories, importStyle, storiesJson })};
+  ${importFn({ stories, importStyle, storiesJson, configDir, projectDir })};
   
   configure(importFn, storiesJson, globalConfig);`;
-  // console.log(entry);
+  console.log(entry);
 
   return {
     plugins: [
       new VirtualModulesPlugin({
-        [path.join(process.cwd(), SKELETON_ENTRY)]: entry,
+        [path.join(projectDir, SKELETON_ENTRY)]: entry,
       }),
     ],
   };
@@ -101,16 +105,15 @@ const wps = {
 };
 
 const wds = {
-  entry: [SKELETON_ENTRY],
   devServer: {
     port: 5000,
+    contentBase: __dirname,
     hot: true,
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Origin": "*",
     },
-    // TODO: How to set static directory for this one?
   },
 };
 
@@ -149,30 +152,6 @@ const wds = {
 //     },
 //     resolve: {
 //       fallback: { path: require.resolve("path-browserify") },
-//     },
-//   },
-//   "design-system": {
-//     module: {
-//       rules: [
-//         {
-//           test: /\.m?[t|j]sx?$/,
-//           resolve: {
-//             fullySpecified: false,
-//           },
-//         },
-//         {
-//           test: /\.css$/,
-//           use: ["style-loader", "css-loader"],
-//         },
-//         {
-//           test: /\.(png|jpe?g|gif|svg)$/i,
-//           use: [
-//             {
-//               loader: "file-loader",
-//             },
-//           ],
-//         },
-//       ],
 //     },
 //   },
 // };

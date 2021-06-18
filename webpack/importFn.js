@@ -26,11 +26,12 @@ const toRequireContext = (input) => {
   throw new Error(`Invalid glob: >> ${input} >> ${regex}`);
 };
 
-const context = ({ input, importStyle }) => {
-  const { path: dir, recursive, match } = toRequireContext(input);
+const context = ({ input, importStyle, configDir }) => {
+  const { path: dir, match } = toRequireContext(input);
+  console.log({ input, dir, match });
   return `
     require.context(
-      "${path.resolve("./storybook", dir)}",
+      "${path.resolve(configDir, dir)}",
       true,
       /${match}/
       ${importStyle === "lazy-require-context" ? ', "lazy"' : ""}
@@ -38,16 +39,21 @@ const context = ({ input, importStyle }) => {
   `;
 };
 
-const contextImportFn = ({ stories, importStyle }) => {
+const contextImportFn = ({ stories: inputStories, importStyle, configDir }) => {
   // XXX: Assumes all globs include a ** part
-  const parts = [].concat(stories).map((s) => s.split("/**/"));
+  const stories = [].concat(inputStories);
+  const parts = stories.map((s) => s.split("/**/"));
 
   return `
     const contexts = {
       ${parts
         .map(
           ([dir], index) =>
-            `['${dir}']: ${context({ input: stories[index], importStyle })}`
+            `['${dir}']: ${context({
+              input: stories[index],
+              importStyle,
+              configDir,
+            })}`
         )
         .join(",")}
     };
@@ -62,35 +68,59 @@ const contextImportFn = ({ stories, importStyle }) => {
   `;
 };
 
-const staticImportFn = ({ storiesJson }) => {
+const staticImportFn = ({
+  storiesJson,
+  importStyle,
+  configDir,
+  projectDir,
+}) => {
   const pathMap = Object.fromEntries(
     Object.values(storiesJson.stories).map((story) => [
       story.parameters.fileName,
-      // fileName is relative to .storybook, webpack wants it relative to CWD
+      // fileName is relative to .storybook, webpack wants it relative to project
       `./${path.relative(
-        process.cwd(),
-        path.resolve("./storybook", story.parameters.fileName)
+        projectDir,
+        path.resolve(configDir, story.parameters.fileName)
       )}`,
     ])
   );
+
+  if (importStyle === "lazy-static") {
+    return `
+      const imports = {
+        ${Object.entries(pathMap)
+          .map(([sbPath, wpPath]) => `["${sbPath}"]: () => import("${wpPath}")`)
+          .join(",\n")}
+      };
+
+      const importFn = (path) => imports[path]();
+    `;
+  }
+
   return `
     const imports = {
       ${Object.entries(pathMap)
-        .map(([sbPath, wpPath]) => `["${sbPath}"]: () => import("${wpPath}")`)
+        .map(([sbPath, wpPath]) => `["${sbPath}"]: require("${wpPath}")`)
         .join(",\n")}
     };
 
-    const importFn = (path) => imports[path]();
+    const importFn = (path) => imports[path];
   `;
 };
 
-const importFn = ({ stories, importStyle, storiesJson }) => {
+const importFn = ({
+  stories,
+  importStyle,
+  storiesJson,
+  configDir,
+  projectDir,
+}) => {
   if (["require-context", "lazy-require-context"].includes(importStyle)) {
-    return contextImportFn({ stories, importStyle });
+    return contextImportFn({ stories, importStyle, configDir });
   }
 
-  if (importStyle === "static") {
-    return staticImportFn({ storiesJson });
+  if (["static", "lazy-static"].includes(importStyle)) {
+    return staticImportFn({ storiesJson, importStyle, configDir, projectDir });
   }
 };
 

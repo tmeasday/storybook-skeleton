@@ -4,10 +4,7 @@ const path = require("path");
 const glob = require("globby");
 const { readCsf } = require("@storybook/csf-tools");
 
-// NOTE: assumes directory structure (skeleton/ sibling of .storybook/)
-const configDir = path.join(process.cwd(), "./storybook");
-
-async function extractStoriesJson({ stories: storiesGlobs }) {
+async function extractStoriesJson({ stories: storiesGlobs, configDir }) {
   if (!storiesGlobs) {
     throw new Error("No stories glob");
   }

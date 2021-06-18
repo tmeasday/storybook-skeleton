@@ -1,30 +1,11 @@
 const path = require("path");
-const HtmlWebpackPlugin = require(`${path.join(
-  process.cwd(),
-  "node_modules",
-  "html-webpack-plugin"
-)}`);
 const WebpackCdnPlugin = require("webpack-cdn-plugin");
 const { merge } = require("webpack-merge");
 const parts = require("./webpack.parts");
 
-const commonConfig = {
-  plugins: [new HtmlWebpackPlugin({ filename: "iframe.html" })],
-  resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
-    alias: {
-      react: path.resolve(process.cwd(), "node_modules/react"),
-      ["react-dom"]: path.resolve(process.cwd(), "node_modules/react-dom"),
-    },
-  },
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
-  },
-};
-
 async function composeConfiguration({
-  storybookConfig,
+  projectDir,
+  configDir,
   target,
   importStyle,
   vertical,
@@ -36,47 +17,46 @@ async function composeConfiguration({
   devServer,
   enableCdn,
 }) {
-  let targetConfiguration;
+  const commonConfig = {
+    mode: target,
+    entry: parts.SKELETON_ENTRY,
+    resolve: {
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+      alias: {
+        react: path.resolve(projectDir, "node_modules/react"),
+        ["react-dom"]: path.resolve(projectDir, "node_modules/react-dom"),
+      },
+    },
+    output: {
+      filename: "[name].bundle.js",
+      path: path.resolve(__dirname, "dist"),
+    },
+  };
 
-  switch (target) {
-    case "development":
-      targetConfiguration = { mode: "development" };
-      break;
-    case "production":
-      targetConfiguration = {
-        entry: parts.SKELETON_ENTRY,
-        mode: "production",
-      };
-      break;
-    default:
-      throw new Error(`Unknown target: ${target}`);
-  }
-
+  const { skeletonWebpackConfig, stories } = require(path.resolve(
+    configDir,
+    "main.js"
+  ));
   let projectConfig;
-  if (!storybookConfig.skeletonWebpackConfig) {
-    throw new Error(
-      `Didn't find \`skeletonWebpackConfig\` in \`.storybook/main.js\``
-    );
-  } else if (typeof storybookConfig.skeletonWebpackConfig === "function") {
-    projectConfig = await storybookConfig.skeletonWebpackConfig();
+  if (!skeletonWebpackConfig) {
+    projectConfig = {};
+  } else if (typeof skeletonWebpackConfig === "function") {
+    projectConfig = await skeletonWebpackConfig();
   } else {
-    projectConfig = storybookConfig.skeletonWebpackConfig;
+    projectConfig = skeletonWebpackConfig;
   }
 
   const config = merge(
     commonConfig,
     projectConfig,
     await parts.entrypointsVirtualModules({
-      stories: storybookConfig.stories,
+      stories,
       importStyle,
+      configDir,
+      projectDir,
     }),
-    targetConfiguration,
     parts[devServer],
-    {
-      module: {
-        rules: [parts.builderAlternatives[builder]],
-      },
-    },
+    { module: { rules: [parts.builderAlternatives[builder]] } },
     compileLazily ? { experiments: { lazyCompilation: true } } : {},
     profileCpu ? parts.cpuProfiler() : {},
     enableSourceMaps ? { devtool: "cheap-module-source-map" } : {},

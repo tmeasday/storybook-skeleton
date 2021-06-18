@@ -2,14 +2,12 @@ const argv = require("webpack-nano/argv");
 const path = require("path");
 const composeConfiguration = require("./compose-configuration");
 
-// NOTE: assumes directory structure (skeleton/ sibiling of .storybook/)
-const storybookConfig = require(path.resolve(
-  process.cwd(),
-  "./.storybook/main.js"
-));
+const projectDir = process.cwd();
+const configDir = path.resolve(projectDir, "./.storybook");
 
 module.exports = composeConfiguration({
-  storybookConfig,
+  projectDir,
+  configDir,
   target: process.env.TARGET || argv.target || "development",
   importStyle: process.env.IMPORT || "require-context",
   vertical: process.env.VERTICAL === "1",
