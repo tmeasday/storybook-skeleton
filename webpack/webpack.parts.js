@@ -36,7 +36,7 @@ const entrypointsVirtualModules = async ({
 
 const builderAlternatives = {
   esbuild: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "esbuild-loader",
     exclude: /node_modules/,
     options: {
@@ -45,7 +45,7 @@ const builderAlternatives = {
     },
   },
   swc: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "swc-loader",
     exclude: /node_modules/,
     options: {
@@ -70,7 +70,7 @@ const builderAlternatives = {
     },
   },
   babel: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "babel-loader",
     exclude: /node_modules/,
     options: {
