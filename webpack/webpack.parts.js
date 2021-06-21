@@ -117,45 +117,6 @@ const wds = {
   },
 };
 
-// const projects = {
-//   chromatic: {
-//     module: {
-//       rules: [
-//         {
-//           test: /\.(m?[t|j]s)$/,
-//           resolve: {
-//             fullySpecified: false,
-//           },
-//         },
-//         {
-//           test: /\.svg$/,
-//           loader: "react-svg-loader",
-//           options: {
-//             jsx: true,
-//           },
-//         },
-//         {
-//           test: /\.(graphql|gql)$/,
-//           include: [/schema/],
-//           exclude: /node_modules/,
-//           loader: "raw-loader",
-//         },
-//         {
-//           test: /\.handlebars/,
-//           loader: "handlebars-loader",
-//           exclude: /node_modules/,
-//           // query: {
-//           //   helperDirs: path.join(__dirname, '..','lib', 'emails', 'helpers'),
-//           // },
-//         },
-//       ],
-//     },
-//     resolve: {
-//       fallback: { path: require.resolve("path-browserify") },
-//     },
-//   },
-// };
-
 const cpuProfiler = () => {
   const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
   return {
