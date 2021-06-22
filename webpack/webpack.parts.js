@@ -1,4 +1,6 @@
 const path = require("path");
+const fs = require("fs");
+const { promisify } = require("util");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
 const VirtualModulesPlugin = require("webpack-virtual-modules");
 const { extractStoriesJson } = require("./stories-json");
@@ -13,10 +15,18 @@ const entrypointsVirtualModules = async ({
   projectDir,
 }) => {
   const storiesJson = await extractStoriesJson({ stories, configDir });
+  const previewPath = "./.storybook/preview";
+  const existsSync = promisify(fs.exists);
+  const hasPreview = (
+    await Promise.all([
+      existsSync(path.resolve(projectDir, `${previewPath}.js`)),
+      existsSync(path.resolve(projectDir, `${previewPath}.ts`)),
+    ])
+  ).find(Boolean);
   const entry = `
   import { configure } from './skeleton/src/storybook';
   
-  import * as globalConfig from './.storybook/preview';
+  const globalConfig = ${hasPreview ? `require('./.storybook/preview')` : "{}"};
   
   const storiesJson = ${JSON.stringify(storiesJson)};
   

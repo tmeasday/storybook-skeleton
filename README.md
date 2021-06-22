@@ -18,9 +18,7 @@ The process to build and run the skeleton is as follows:
 
 3. Add a `skeletonWebpackConfig` field to `.storybook/main.js` with the minimal webpack config you need to compile your stories/components.
 
-4. Ensure you have a `.storybook/preview.js|ts` (it can be empty)
-
-5. Run the skeleton with `yarn webpack serve --config ./skeleton/webpack/webpack.config.js`
+4. Run the skeleton with `yarn webpack serve --config ./skeleton/webpack/webpack.config.js`
 
 The following additional parameters are supported:
 
@@ -33,17 +31,17 @@ The following additional parameters are supported:
 - `ENABLE_FS_CACHE=1` - Enabled webpack's file system level cache
 - `ENABLE_CDN=1` - Load Lodash and React from a CDN
 
-6. Run the prebuild manager (inside the skeleton project):
+5. Run the prebuild manager (inside the skeleton project):
 
 ```
 yarn start-manager
 ```
 
-7. Browse to the URL from step 3: http://localhost:8080
+6. Browse to the URL from step 3: http://localhost:8080
 
 ## Examples
 
-- The CLI (react) template is setup in `examples/template` and can be run as in steps 5-7 above.
+- The CLI (react) template is setup in `examples/template` and can be run as in steps 4-6 above.
 
 - The Storybook design system `skeleton` branch is setup additionally (you will need to symlink).
 
