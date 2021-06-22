@@ -100,7 +100,6 @@ async function composeConfiguration({
       : {}
   );
 
-  console.log(config);
   return config;
 }
 

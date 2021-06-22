@@ -33,7 +33,6 @@ const entrypointsVirtualModules = async ({
   ${importFn({ stories, importStyle, storiesJson, configDir, projectDir })};
   
   configure(importFn, storiesJson, globalConfig);`;
-  console.log(entry);
 
   return {
     plugins: [
