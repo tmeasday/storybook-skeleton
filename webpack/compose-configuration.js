@@ -41,7 +41,12 @@ async function composeConfiguration({
   if (!skeletonWebpackConfig) {
     projectConfig = {};
   } else if (typeof skeletonWebpackConfig === "function") {
-    projectConfig = await skeletonWebpackConfig();
+    try {
+      projectConfig = await skeletonWebpackConfig();
+    } catch (err) {
+      console.error(`Unable to evaluate \`skeletonWebpackConfig\`\n`);
+      throw err;
+    }
   } else {
     projectConfig = skeletonWebpackConfig;
   }
