@@ -108,7 +108,7 @@ const staticImportFn = ({
 };
 
 const dynamicImportFn = ({ stories: inputStories, importStyle, configDir }) => {
-  // XXX: Assumes all globs include a ** part
+  // XXX: Assumes all globs include a ** part, and end in a fixed extension
   const stories = [].concat(inputStories);
   const parts = stories.map((s) => s.split("/**/"));
 
