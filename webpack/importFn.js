@@ -107,6 +107,45 @@ const staticImportFn = ({
   `;
 };
 
+const dynamicImportFn = ({ stories: inputStories, importStyle, configDir }) => {
+  // XXX: Assumes all globs include a ** part
+  const stories = [].concat(inputStories);
+  const parts = stories.map((s) => s.split("/**/"));
+
+  const importFnName = importStyle === "lazy-dynamic" ? "import" : "require";
+  // Take a part above, e.g. ['./components', '*.stories.ts'],
+  // and make a function that:
+  //   - takes a suffix (e.g. 'Button/MiddleButton.stories.ts')
+  //   - strips the .stories.ts part => middle (to 'Button/MiddleButton')
+  //   - runs import(`./components/${middle}.stories.ts`)
+  const makeImportFnPart = ([prefix, fileMatch]) => {
+    const pathPrefix = path.resolve(configDir, prefix);
+    const fileSuffix = fileMatch.replace("*", "");
+    return `
+      (suffix) => {
+        const middle = suffix.substring(0, suffix.length - ${fileSuffix.length});
+        return ${importFnName}(\`${pathPrefix}/\${middle}${fileSuffix}\`);
+      }
+    `;
+  };
+
+  return `
+    const importFnParts = {
+      ${parts
+        .map((part) => `['${part[0]}']: ${makeImportFnPart(part)}`)
+        .join(",")}
+    };
+
+    const importFn = (path) => {
+      return Object.entries(importFnParts).map(([prefix, importFnPart]) => {
+        if (path.startsWith(prefix)) {
+          return importFnPart(path.replace(\`\${prefix}/\`, ''));
+        }
+      }).find(Boolean);
+    }
+  `;
+};
+
 const importFn = ({
   stories,
   importStyle,
@@ -120,6 +159,10 @@ const importFn = ({
 
   if (["static", "lazy-static"].includes(importStyle)) {
     return staticImportFn({ storiesJson, importStyle, configDir, projectDir });
+  }
+
+  if (["dynamic", "lazy-dynamic"].includes(importStyle)) {
+    return dynamicImportFn({ stories, importStyle, configDir });
   }
 };
 
