@@ -20,7 +20,7 @@ The process to build and run the skeleton is as follows:
 
 4. Ensure you have a `.storybook/preview.js|ts` (it can be empty)
 
-5. Run the skeleton with `yarn webapck serve --config ./skeleton/webpack/webpack.config.js`
+5. Run the skeleton with `yarn webpack serve --config ./skeleton/webpack/webpack.config.js`
 
 The following additional parameters are supported:
 
