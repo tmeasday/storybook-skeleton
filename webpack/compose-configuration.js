@@ -16,6 +16,7 @@ async function composeConfiguration({
   enableFsCache,
   devServer,
   enableCdn,
+  debug,
 }) {
   const commonConfig = {
     mode: target,
@@ -59,6 +60,7 @@ async function composeConfiguration({
       importStyle,
       configDir,
       projectDir,
+      debug,
     }),
     parts[devServer],
     { module: { rules: [parts.builderAlternatives[builder]] } },
@@ -100,6 +102,7 @@ async function composeConfiguration({
       : {}
   );
 
+  if (debug) console.log(`\nWEBPACK CONFIG\n\n`, config);
   return config;
 }
 

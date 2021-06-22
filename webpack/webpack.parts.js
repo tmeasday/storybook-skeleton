@@ -13,6 +13,7 @@ const entrypointsVirtualModules = async ({
   importStyle,
   configDir,
   projectDir,
+  debug,
 }) => {
   const storiesJson = await extractStoriesJson({ stories, configDir });
   const previewPath = "./.storybook/preview";
@@ -34,6 +35,7 @@ const entrypointsVirtualModules = async ({
   
   configure(importFn, storiesJson, globalConfig);`;
 
+  if (debug) console.log(`\nVIRTUAL MODULE ENTRY\n`, entry);
   return {
     plugins: [
       new VirtualModulesPlugin({

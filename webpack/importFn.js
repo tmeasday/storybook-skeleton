@@ -28,7 +28,6 @@ const toRequireContext = (input) => {
 
 const context = ({ input, importStyle, configDir }) => {
   const { path: dir, match } = toRequireContext(input);
-  console.log({ input, dir, match });
   return `
     require.context(
       "${path.resolve(configDir, dir)}",

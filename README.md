@@ -30,6 +30,7 @@ The following additional parameters are supported:
 - `ENABLE_SOURCE_MAPS=1` - Enables generation of source maps
 - `ENABLE_FS_CACHE=1` - Enabled webpack's file system level cache
 - `ENABLE_CDN=1` - Load Lodash and React from a CDN
+- `DEBUG=1` - Output debugging info for the build
 
 5. Run the prebuild manager (inside the skeleton project):
 

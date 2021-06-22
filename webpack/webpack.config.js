@@ -18,4 +18,5 @@ module.exports = composeConfiguration({
   enableFsCache: process.env.ENABLE_FS_CACHE === "1",
   devServer: process.env.DEV_SERVER || "wds",
   enableCdn: process.env.ENABLE_CDN === "1",
+  debug: process.env.DEBUG === "1",
 });
