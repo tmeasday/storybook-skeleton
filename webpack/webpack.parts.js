@@ -1,9 +1,53 @@
 const path = require("path");
+const fs = require("fs");
+const { promisify } = require("util");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
+const VirtualModulesPlugin = require("webpack-virtual-modules");
+const { extractStoriesJson } = require("./stories-json");
+const { importFn } = require("./importFn");
+
+const SKELETON_ENTRY = "./skeleton-entry.js";
+
+const entrypointsVirtualModules = async ({
+  stories,
+  importStyle,
+  configDir,
+  projectDir,
+  debug,
+}) => {
+  const storiesJson = await extractStoriesJson({ stories, configDir });
+  const previewPath = "./.storybook/preview";
+  const existsSync = promisify(fs.exists);
+  const hasPreview = (
+    await Promise.all([
+      existsSync(path.resolve(projectDir, `${previewPath}.js`)),
+      existsSync(path.resolve(projectDir, `${previewPath}.ts`)),
+    ])
+  ).find(Boolean);
+  const entry = `
+  import { configure } from './skeleton/src/storybook';
+  
+  const globalConfig = ${hasPreview ? `require('./.storybook/preview')` : "{}"};
+  
+  const storiesJson = ${JSON.stringify(storiesJson)};
+  
+  ${importFn({ stories, importStyle, storiesJson, configDir, projectDir })};
+  
+  configure(importFn, storiesJson, globalConfig);`;
+
+  if (debug) console.log(`\nVIRTUAL MODULE ENTRY\n`, entry);
+  return {
+    plugins: [
+      new VirtualModulesPlugin({
+        [path.join(projectDir, SKELETON_ENTRY)]: entry,
+      }),
+    ],
+  };
+};
 
 const builderAlternatives = {
   esbuild: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "esbuild-loader",
     exclude: /node_modules/,
     options: {
@@ -12,7 +56,7 @@ const builderAlternatives = {
     },
   },
   swc: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "swc-loader",
     exclude: /node_modules/,
     options: {
@@ -37,7 +81,7 @@ const builderAlternatives = {
     },
   },
   babel: {
-    test: /\.([t|j]sx?|svg)$/,
+    test: /\.[t|j]sx?$/,
     loader: "babel-loader",
     exclude: /node_modules/,
     options: {
@@ -48,10 +92,11 @@ const builderAlternatives = {
       ],
     },
   },
+  none: {},
 };
 
-const wps = ({ project }) => ({
-  entry: ["webpack-plugin-serve/client", `./src/${project}-entry.js`],
+const wps = {
+  entry: ["webpack-plugin-serve/client", SKELETON_ENTRY],
   watch: true,
   plugins: [
     new WebpackPluginServe({
@@ -68,91 +113,17 @@ const wps = ({ project }) => ({
         }),
     }),
   ],
-});
+};
 
-const wds = ({ project }) => ({
-  entry: [`./src/${project}-entry.js`],
+const wds = {
   devServer: {
     port: 5000,
+    contentBase: __dirname,
     hot: true,
     headers: {
       "Access-Control-Allow-Headers": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Origin": "*",
-    },
-    // TODO: How to set static directory for this one?
-  },
-});
-
-const projects = {
-  chromatic: {
-    module: {
-      rules: [
-        {
-          test: /\.(m?[t|j]s)$/,
-          resolve: {
-            fullySpecified: false,
-          },
-        },
-        {
-          test: /\.svg$/,
-          loader: "react-svg-loader",
-          options: {
-            jsx: true,
-          },
-        },
-        {
-          test: /\.(graphql|gql)$/,
-          include: [/schema/],
-          exclude: /node_modules/,
-          loader: "raw-loader",
-        },
-        {
-          test: /\.handlebars/,
-          loader: "handlebars-loader",
-          exclude: /node_modules/,
-          // query: {
-          //   helperDirs: path.join(__dirname, '..','lib', 'emails', 'helpers'),
-          // },
-        },
-      ],
-    },
-    resolve: {
-      fallback: { path: require.resolve("path-browserify") },
-    },
-  },
-  "design-system": {
-    module: {
-      rules: [
-        {
-          test: /\.m?[t|j]sx?$/,
-          resolve: {
-            fullySpecified: false,
-          },
-        },
-        {
-          test: /\.css$/,
-          use: ["style-loader", "css-loader"],
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)$/i,
-          use: [
-            {
-              loader: "file-loader",
-            },
-          ],
-        },
-      ],
-    },
-  },
-  template: {
-    module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: ["style-loader", "css-loader"],
-        },
-      ],
     },
   },
 };
@@ -177,8 +148,9 @@ const splitVertically = {
 };
 
 module.exports = {
+  SKELETON_ENTRY,
+  entrypointsVirtualModules,
   builderAlternatives,
-  projects,
   cpuProfiler,
   wps,
   wds,

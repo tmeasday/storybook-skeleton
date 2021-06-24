@@ -38,11 +38,16 @@
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
     "webpack-nano": "^1.1.1",
-    "webpack-plugin-serve": "^1.4.1"
+    "webpack-plugin-serve": "^1.4.1",
+    "webpack-virtual-modules": "^0.4.3"
   },
   "dependencies": {
     "@storybook/csf": "^0.0.1",
+    "@storybook/csf-tools": "^6.3.0-alpha.30",
+    "glob-base": "^0.3.0",
+    "globby": "^11.0.3",
     "handlebars": "^4.7.7",
+    "micromatch": "^4.0.4",
     "path-browserify": "^1.0.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
