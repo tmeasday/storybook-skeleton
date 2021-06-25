@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "postinstall": "cd examples/template && yarn",
     "start-wps": "DEV_SERVER=wps wp --target development",
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
     "build": "wp --target production",
