@@ -125,6 +125,9 @@ const wds = {
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Origin": "*",
     },
+    after: (app) => {
+      app.get("/ping", (req, res) => res.send("pong"));
+    },
   },
 };
 
