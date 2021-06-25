@@ -127,6 +127,35 @@ const wds = {
     },
     after: (app) => {
       app.get("/ping", (req, res) => res.send("pong"));
+      app.get("/stories", (req, res) => {
+        // TODO: Generate the stories based on fs, this is needed by the sidebar
+        // TODO: To achieve this, glob src for '*.stories.jsx'
+        res.json([
+          {
+            component: "Button",
+            stories: [
+              { id: "button--primary", name: "Primary" },
+              { id: "button--secondary", name: "Secondary" },
+              { id: "button--large", name: "Large" },
+              { id: "button--small", name: "Small" },
+            ],
+          },
+          {
+            component: "Page",
+            stories: [
+              { id: "page--loggedin", name: "LoggedIn" },
+              { id: "page--loggedout", name: "LoggedOut" },
+            ],
+          },
+          {
+            component: "Header",
+            stories: [
+              { id: "page--loggedin", name: "LoggedIn" },
+              { id: "page--loggedout", name: "LoggedOut" },
+            ],
+          },
+        ]);
+      });
     },
   },
 };
