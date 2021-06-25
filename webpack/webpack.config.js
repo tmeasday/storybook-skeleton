@@ -11,7 +11,7 @@ module.exports = composeConfiguration({
   target: process.env.TARGET || argv.target || "development",
   importStyle: process.env.IMPORT || "require-context",
   vertical: process.env.VERTICAL === "1",
-  builder: process.env.BUILDER || "none",
+  builder: process.env.BUILDER || "babel",
   compileLazily: process.env.COMPILE_LAZILY === "1",
   profileCpu: process.env.PROFILE_CPU === "1",
   enableSourceMaps: process.env.ENABLE_SOURCE_MAPS === "1",

@@ -22,7 +22,7 @@ The process to build and run the skeleton is as follows:
 
 The following additional parameters are supported:
 
-- `BUILDER=babel` - It accepts "none", "babel", "esbuild", and "swc" and defaults to "none".
+- `BUILDER=babel` - It accepts "none", "babel", "esbuild", and "swc" and defaults to "babel".
 - `COMPILE_LAZILY=1` - Set to enable lazy compilation.
 - `IMPORT=lazy-require-context` - How to import CSF files (not all options are available for all projects). Options: `lazy-require-context|require-context|lazy-static|static|lazy-dynamic|dynamic`
 - `VERTICAL=1` - Split "vertically" by transforming CSF files to import components async.
