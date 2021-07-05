@@ -141,11 +141,11 @@ const wds = ({ stories, configDir }) => ({
 // TODO: Handle updates (i.e. if something in glob changes).
 // Is there a hook for wds/wps for that?
 function addSideloadingAPI(app, storiesJson) {
-  app.get("/ping", (req, res) => res.send("pong"));
-  app.get("/stories", (req, res) => res.json(storiesJson));
+  app.get("/api/ping", (req, res) => res.send("pong"));
+  app.get("/api/stories", (req, res) => res.json(storiesJson));
 
   // /story?id=example-button--primary
-  app.get("/story", (req, res) => {
+  app.get("/api/story", (req, res) => {
     const { id } = req.query;
 
     if (id) {
