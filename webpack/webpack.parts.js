@@ -95,7 +95,7 @@ const builderAlternatives = {
   none: {},
 };
 
-const wps = {
+const wps = ({ stories, configDir }) => ({
   entry: ["webpack-plugin-serve/client", SKELETON_ENTRY],
   watch: true,
   plugins: [
@@ -104,18 +104,23 @@ const wps = {
       static: "./dist",
       liveReload: true,
       waitForBuild: true,
-      middleware: (app) =>
+      middleware: async (app) => {
+        const storiesJson = await extractStoriesJson({ stories, configDir });
+
         app.use(async (ctx, next) => {
           await next();
           ctx.set("Access-Control-Allow-Headers", "*");
           ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
           ctx.set("Access-Control-Allow-Origin", "*");
-        }),
+        });
+
+        addSideloadingAPI(app, storiesJson);
+      },
     }),
   ],
-};
+});
 
-const wds = {
+const wds = ({ stories, configDir }) => ({
   devServer: {
     port: 5000,
     contentBase: __dirname,
@@ -125,40 +130,31 @@ const wds = {
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Origin": "*",
     },
-    after: (app) => {
-      app.get("/ping", (req, res) => res.send("pong"));
-      app.get("/stories", (req, res) => {
-        // TODO: Generate the stories based on fs, this is needed by the sidebar
-        // TODO: To achieve this, glob src for '*.stories.jsx'
-        res.json([
-          {
-            component: "Button",
-            stories: [
-              { id: "button--primary", name: "Primary" },
-              { id: "button--secondary", name: "Secondary" },
-              { id: "button--large", name: "Large" },
-              { id: "button--small", name: "Small" },
-            ],
-          },
-          {
-            component: "Page",
-            stories: [
-              { id: "page--loggedin", name: "LoggedIn" },
-              { id: "page--loggedout", name: "LoggedOut" },
-            ],
-          },
-          {
-            component: "Header",
-            stories: [
-              { id: "page--loggedin", name: "LoggedIn" },
-              { id: "page--loggedout", name: "LoggedOut" },
-            ],
-          },
-        ]);
-      });
+    after: async (app) => {
+      const storiesJson = await extractStoriesJson({ stories, configDir });
+
+      addSideloadingAPI(app, storiesJson);
     },
   },
-};
+});
+
+// TODO: Handle updates (i.e. if something in glob changes).
+// Is there a hook for wds/wps for that?
+function addSideloadingAPI(app, storiesJson) {
+  app.get("/ping", (req, res) => res.send("pong"));
+  app.get("/stories", (req, res) => res.json(storiesJson));
+
+  // /story?id=example-button--primary
+  app.get("/story", (req, res) => {
+    const { id } = req.query;
+
+    if (id) {
+      return res.json(storiesJson.stories[id]);
+    }
+
+    res.send(400);
+  });
+}
 
 const cpuProfiler = () => {
   const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");

@@ -62,7 +62,7 @@ async function composeConfiguration({
       projectDir,
       debug,
     }),
-    parts[devServer],
+    parts[devServer]({ stories, configDir }),
     { module: { rules: [parts.builderAlternatives[builder]] } },
     compileLazily ? { experiments: { lazyCompilation: true } } : {},
     profileCpu ? parts.cpuProfiler() : {},
