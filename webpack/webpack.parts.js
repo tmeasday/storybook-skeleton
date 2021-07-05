@@ -149,7 +149,11 @@ function addSideloadingAPI(app, storiesJson) {
     const { id } = req.query;
 
     if (id) {
-      return res.json(storiesJson.stories[id]);
+      if (storiesJson.stories[id]) {
+        return res.json(storiesJson.stories[id]);
+      }
+
+      return res.send(404);
     }
 
     res.send(400);
