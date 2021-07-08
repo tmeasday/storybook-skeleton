@@ -95,7 +95,7 @@ const builderAlternatives = {
   none: {},
 };
 
-const wps = ({ stories, configDir }) => ({
+const wps = ({ stories, configDir, projectDir }) => ({
   entry: ["webpack-plugin-serve/client", SKELETON_ENTRY],
   watch: true,
   plugins: [
@@ -115,12 +115,13 @@ const wps = ({ stories, configDir }) => ({
         });
 
         addSideloadingAPI(app, storiesJson);
+        setupFileWatcher(projectDir);
       },
     }),
   ],
 });
 
-const wds = ({ stories, configDir }) => ({
+const wds = ({ stories, configDir, projectDir }) => ({
   devServer: {
     port: 5000,
     contentBase: __dirname,
@@ -134,13 +135,14 @@ const wds = ({ stories, configDir }) => ({
       const storiesJson = await extractStoriesJson({ stories, configDir });
 
       addSideloadingAPI(app, storiesJson);
+      setupFileWatcher(projectDir);
     },
   },
 });
 
 // TODO: Handle updates (i.e. if something in glob changes).
 // Is there a hook for wds/wps for that?
-function addSideloadingAPI(app, storiesJson) {
+function addSideloadingAPI(app, storiesJson, projectDir) {
   app.get("/api/ping", (req, res) => res.send("pong"));
   app.get("/api/stories", (req, res) => res.json(storiesJson));
 
@@ -158,6 +160,40 @@ function addSideloadingAPI(app, storiesJson) {
 
     res.send(400);
   });
+}
+
+// TODO: Connect the events with a websocket server
+function setupFileWatcher(projectDir) {
+  const Watchpack = require("watchpack");
+
+  // See https://www.npmjs.com/package/watchpack for full options.
+  // If you want less traffic, consider using aggregation with some interval
+  const wp = new Watchpack({
+    poll: true,
+    // Slower but the assumption is that some people use symlinks
+    followSymlinks: true,
+    ignored: "**/.git",
+  });
+
+  wp.watch({
+    directories: [projectDir],
+  });
+
+  wp.on("change", (filePath, mtime, explanation) => {
+    // filePath: the changed file
+    // mtime: last modified time for the changed file
+    // explanation: textual information how this change was detected
+    console.log("changed", { filePath, mtime, explanation });
+  });
+
+  wp.on("remove", (filePath, explanation) => {
+    // filePath: the removed file or directory
+    // explanation: textual information how this change was detected
+    console.log("removed", { filePath, explanation });
+  });
+
+  // TODO: This probably should get called when the server is being shut down
+  // wp.close();
 }
 
 const cpuProfiler = () => {
