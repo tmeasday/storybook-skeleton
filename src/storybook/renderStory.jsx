@@ -11,5 +11,7 @@ export async function renderStory(Story) {
 
   const loaded = await Story.getLoaded();
 
+  console.log('rendering')
+  console.trace()
   render(<Story loaded={loaded}/>, div);
 }

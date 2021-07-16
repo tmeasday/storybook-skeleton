@@ -11,7 +11,15 @@ async function renderStoryId(importFn, storiesJson, globalConfig, storyId) {
   await renderStory(composed);
 }
 
-export async function configure(importFn, storiesJson, globalConfig = {}) {
+export async function configure(importFn, storiesJson, globalConfig = {}, hot) {
+  console.log(hot);
+  if (hot.accept) {
+    hot.dispose(() => console.log("HMR dispose"));
+    hot.accept(() => console.log("HMR accept"));
+  }
+
+  console.log("configure");
+  console.trace();
   const { send } = setupChannel({
     onSetCurrentStory: (storyId) =>
       renderStoryId(importFn, storiesJson, globalConfig, storyId),
