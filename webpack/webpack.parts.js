@@ -144,8 +144,9 @@ const wds = ({ stories, configDir, projectDir }) => ({
 // Is there a hook for wds/wps for that?
 function addSideloadingAPI(app, storiesJson, projectDir) {
   app.get("/api/ping", (req, res) => res.send("pong"));
-  app.get("/api/stories", (req, res) => res.json(storiesJson));
+  app.get("/api/stories.json", (req, res) => res.json(storiesJson));
 
+  // TODO: /api/stories/<id>.json
   // /story?id=example-button--primary
   app.get("/api/story", (req, res) => {
     const { id } = req.query;
