@@ -6,7 +6,6 @@ const VirtualModulesPlugin = require("webpack-virtual-modules");
 const { extractStoriesJson } = require("./stories-json");
 const { importFn } = require("./importFn");
 const { attachMetaApi } = require("./meta-api");
-const { setupFileWatcher } = require("./file-watcher");
 
 const SKELETON_ENTRY = "./skeleton-entry.js";
 
@@ -97,7 +96,7 @@ const builderAlternatives = {
   none: {},
 };
 
-const wps = ({ stories, configDir, projectDir }) => ({
+const wps = ({ stories, configDir }) => ({
   entry: ["webpack-plugin-serve/client", SKELETON_ENTRY],
   watch: true,
   plugins: [
@@ -117,13 +116,12 @@ const wps = ({ stories, configDir, projectDir }) => ({
         });
 
         attachMetaApi(app, storiesJson);
-        setupFileWatcher(projectDir);
       },
     }),
   ],
 });
 
-const wds = ({ stories, configDir, projectDir }) => ({
+const wds = ({ stories, configDir }) => ({
   devServer: {
     port: 5000,
     contentBase: __dirname,
@@ -137,7 +135,6 @@ const wds = ({ stories, configDir, projectDir }) => ({
       const storiesJson = await extractStoriesJson({ stories, configDir });
 
       attachMetaApi(app, storiesJson);
-      setupFileWatcher(projectDir);
     },
   },
 });

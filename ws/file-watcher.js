@@ -28,8 +28,7 @@ function setupFileWatcher(projectDir) {
     console.log("removed", { filePath, explanation });
   });
 
-  // TODO: This probably should get called when the server is being shut down
-  // wp.close();
+  return wp;
 }
 
 module.exports = {

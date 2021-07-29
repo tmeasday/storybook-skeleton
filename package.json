@@ -7,6 +7,7 @@
     "postinstall": "cd examples/template && yarn",
     "start-wps": "DEV_SERVER=wps wp --target development",
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
+    "start-ws": "node ./ws/server.js",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js",
     "measure-stories-generation": "node ./scripts/measure-stories-generation.js",
@@ -54,6 +55,7 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "telejson": "^5.3.1",
-    "watchpack": "^2.2.0"
+    "watchpack": "^2.2.0",
+    "ws": "^8.0.0"
   }
 }

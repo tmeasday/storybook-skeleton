@@ -46,6 +46,10 @@ yarn start-manager
 
 - The Storybook design system `skeleton` branch is setup additionally (you will need to symlink).
 
+## WebSocket Server
+
+There's a websocket server for communicating changes made to stories. To run it, use `yarn start-ws`.
+
 ## Benchmarking
 
 Run `yarn benchmark` and it will give you some numbers as it builds `design-system` (make sure to link first as above) using different tools available.
