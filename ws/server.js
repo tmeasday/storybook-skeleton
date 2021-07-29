@@ -31,7 +31,7 @@ function setupServer({ port, projectDir }) {
 
   // TODO: Refine further + add effects related to file watching
   wss.on("connection", (ws) => {
-    ws.on("message", function incoming(message) {
+    ws.on("message", (message) => {
       console.log("received: %s", message);
     });
 

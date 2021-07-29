@@ -48,7 +48,9 @@ yarn start-manager
 
 ## WebSocket Server
 
-There's a websocket server for communicating changes made to stories. To run it, use `yarn start-ws`.
+There's a websocket server for communicating changes made to stories. To run it, use `yarn start-ws-server`.
+
+To test the server using a small client, run `yarn start-ws-client`. Make sure that the server is running before running the command.
 
 ## Benchmarking
 
