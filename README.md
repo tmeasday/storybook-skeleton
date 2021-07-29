@@ -50,6 +50,8 @@ yarn start-manager
 
 Run `yarn benchmark` and it will give you some numbers as it builds `design-system` (make sure to link first as above) using different tools available.
 
+To measure the execution time of `stories.json` generation, run `yarn measure-stories-generation`. The script expects to find `design-system` directory within the repository root.
+
 ## Code structure
 
 - `src/storybook` - the skeleton's Storybook implementation. This is mostly a cobbled together collection of code / reimplementations from Storybook's source, and can be ignored. The one file of interest is probably `loadStory.js` which combines the `require.context` and `stories.json` data to `require()` a CSF file on demand.

@@ -9,6 +9,7 @@
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js",
+    "measure-stories-generation": "node ./scripts/measure-stories-generation.js",
     "start-manager": "http-server composing-storybook/storybook-static"
   },
   "devDependencies": {
