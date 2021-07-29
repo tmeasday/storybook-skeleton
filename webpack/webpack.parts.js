@@ -5,7 +5,8 @@ const { WebpackPluginServe } = require("webpack-plugin-serve");
 const VirtualModulesPlugin = require("webpack-virtual-modules");
 const { extractStoriesJson } = require("./stories-json");
 const { importFn } = require("./importFn");
-const { attachMetaApi, setupFileWatcher } = require("./meta-api");
+const { attachMetaApi } = require("./meta-api");
+const { setupFileWatcher } = require("./file-watcher");
 
 const SKELETON_ENTRY = "./skeleton-entry.js";
 
