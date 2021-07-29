@@ -1,5 +1,4 @@
-// TODO: Connect the events with a websocket server
-function setupFileWatcher(projectDir) {
+function setupFileWatcher({ projectDir, onChange, onRemove }) {
   const Watchpack = require("watchpack");
 
   // See https://www.npmjs.com/package/watchpack for full options.
@@ -10,23 +9,11 @@ function setupFileWatcher(projectDir) {
     followSymlinks: true,
     ignored: "**/.git",
   });
-
   wp.watch({
     directories: [projectDir],
   });
-
-  wp.on("change", (filePath, mtime, explanation) => {
-    // filePath: the changed file
-    // mtime: last modified time for the changed file
-    // explanation: textual information how this change was detected
-    console.log("changed", { filePath, mtime, explanation });
-  });
-
-  wp.on("remove", (filePath, explanation) => {
-    // filePath: the removed file or directory
-    // explanation: textual information how this change was detected
-    console.log("removed", { filePath, explanation });
-  });
+  wp.on("change", onChange);
+  wp.on("remove", onRemove);
 
   return wp;
 }

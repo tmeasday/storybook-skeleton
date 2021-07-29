@@ -27,15 +27,37 @@ function setupServer({ port, projectDir }) {
     },
   });
 
-  const wp = setupFileWatcher(projectDir);
+  // Assuming only a single connection for now (this can be generalized)
+  let connection;
 
   // TODO: Refine further + add effects related to file watching
   wss.on("connection", (ws) => {
+    connection = ws;
+
     ws.on("message", (message) => {
       console.log("received: %s", message);
     });
 
-    ws.send("hello");
+    ws.send("hello, you have connected to the server successfully");
+  });
+
+  const wp = setupFileWatcher({
+    projectDir,
+    onChange(filePath, mtime, explanation) {
+      // filePath: the changed file
+      // mtime: last modified time for the changed file
+      // explanation: textual information how this change was detected
+      console.log("on file change", { filePath, mtime, explanation });
+
+      connection && connection.send("detected a file change");
+    },
+    onRemove(filePath, explanation) {
+      // filePath: the removed file or directory
+      // explanation: textual information how this change was detected
+      console.log("on file remove", { filePath, explanation });
+
+      connection && connection.send("detected a file removal");
+    },
   });
 
   wss.on("close", () => wp.close());
