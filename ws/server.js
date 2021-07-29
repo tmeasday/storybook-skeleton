@@ -1,6 +1,9 @@
 const path = require("path");
 const { Server } = require("ws");
 const { setupFileWatcher } = require("./file-watcher");
+const { extractStoriesJson } = require("../webpack/stories-json");
+
+const projectDir = path.join(process.cwd(), "design-system");
 
 function setupServer({ port, projectDir }) {
   // TODO: Figure out good defaults
@@ -43,20 +46,28 @@ function setupServer({ port, projectDir }) {
 
   const wp = setupFileWatcher({
     projectDir,
-    onChange(filePath, mtime, explanation) {
-      // filePath: the changed file
-      // mtime: last modified time for the changed file
-      // explanation: textual information how this change was detected
-      console.log("on file change", { filePath, mtime, explanation });
+    // filePath: the changed file
+    // mtime: last modified time for the changed file
+    // explanation: textual information how this change was detected
+    onChange: async (filePath, mtime, explanation) => {
+      try {
+        const storiesJson = await parseStoriesJson(projectDir);
 
-      connection && connection.send("detected a file change");
+        connection && connection.send(JSON.stringify(storiesJson));
+      } catch (err) {
+        console.error(err);
+      }
     },
-    onRemove(filePath, explanation) {
-      // filePath: the removed file or directory
-      // explanation: textual information how this change was detected
-      console.log("on file remove", { filePath, explanation });
+    // filePath: the removed file or directory
+    // explanation: textual information how this change was detected
+    onRemove: async (filePath, explanation) => {
+      try {
+        const storiesJson = await parseStoriesJson(projectDir);
 
-      connection && connection.send("detected a file removal");
+        connection && connection.send(JSON.stringify(storiesJson));
+      } catch (err) {
+        console.error(err);
+      }
     },
   });
 
@@ -65,7 +76,14 @@ function setupServer({ port, projectDir }) {
   console.log(`websocket server started at ws://localhost:${port}`);
 }
 
+async function parseStoriesJson(configDir) {
+  return await extractStoriesJson({
+    configDir,
+    stories: "./src/**/*.stories.(jsx|tsx)",
+  });
+}
+
 setupServer({
   port: 8080,
-  projectDir: path.join(process.cwd(), "design-system"),
+  projectDir,
 });
