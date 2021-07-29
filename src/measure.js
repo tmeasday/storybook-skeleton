@@ -1,5 +1,7 @@
 // Reference: https://blog.abelotech.com/posts/measure-execution-time-nodejs-javascript/
-async function measure(fn) {
+async function measure(label, fn) {
+  console.info(`Measuring ${label}`);
+
   const start = new Date();
   const hrstart = process.hrtime();
 

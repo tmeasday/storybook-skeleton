@@ -3,7 +3,7 @@ const path = require("path");
 const { extractStoriesJson } = require("../webpack/stories-json");
 const { measure } = require("../src/measure");
 
-measure(async () => {
+measure("stories generation", async () => {
   const configDir = path.join(process.cwd(), "design-system");
   const storiesJson = await extractStoriesJson({
     configDir,

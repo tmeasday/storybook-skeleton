@@ -2,6 +2,7 @@ const path = require("path");
 const { Server } = require("ws");
 const { setupFileWatcher } = require("./file-watcher");
 const { extractStoriesJson } = require("../webpack/stories-json");
+const { measure } = require("../src/measure");
 
 const projectDir = path.join(process.cwd(), "design-system");
 
@@ -49,26 +50,28 @@ function setupServer({ port, projectDir }) {
     // filePath: the changed file
     // mtime: last modified time for the changed file
     // explanation: textual information how this change was detected
-    onChange: async (filePath, mtime, explanation) => {
-      try {
-        const storiesJson = await parseStoriesJson(projectDir);
+    onChange: (filePath, mtime, explanation) =>
+      measure("stories generation", async () => {
+        try {
+          const storiesJson = await parseStoriesJson(projectDir);
 
-        connection && connection.send(JSON.stringify(storiesJson));
-      } catch (err) {
-        console.error(err);
-      }
-    },
+          connection && connection.send(JSON.stringify(storiesJson));
+        } catch (err) {
+          console.error(err);
+        }
+      }),
     // filePath: the removed file or directory
     // explanation: textual information how this change was detected
-    onRemove: async (filePath, explanation) => {
-      try {
-        const storiesJson = await parseStoriesJson(projectDir);
+    onRemove: (filePath, explanation) =>
+      measure("stories generation", async () => {
+        try {
+          const storiesJson = await parseStoriesJson(projectDir);
 
-        connection && connection.send(JSON.stringify(storiesJson));
-      } catch (err) {
-        console.error(err);
-      }
-    },
+          connection && connection.send(JSON.stringify(storiesJson));
+        } catch (err) {
+          console.error(err);
+        }
+      }),
   });
 
   wss.on("close", () => wp.close());
