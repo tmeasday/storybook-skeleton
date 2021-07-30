@@ -79,7 +79,6 @@ function setupServer({ port, projectDir }) {
         measure("send changed stories", async () => {
           try {
             const csf = (await readCsf(filePath)).parse();
-            const ext = path.extname(filePath);
             const relativePath = path.relative(projectDir, filePath);
 
             // TODO: Copied over from stories-json.js -> extract shared logic
