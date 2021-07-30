@@ -1,5 +1,6 @@
 const eventTypes = {
-  INITIALIZE: "INITIALIZE",
+  INITIALIZE_STORIES: "INITIALIZE_STORIES",
+  PATCH_STORIES: "PATCH_STORIES",
 };
 
 module.exports = { eventTypes };

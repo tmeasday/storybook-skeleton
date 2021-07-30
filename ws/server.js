@@ -1,5 +1,7 @@
 const path = require("path");
 const { Server } = require("ws");
+const { readCsf } = require("@storybook/csf-tools");
+
 const { setupFileWatcher } = require("./file-watcher");
 const { extractStoriesJson } = require("../webpack/stories-json");
 const { measure } = require("../src/measure");
@@ -51,8 +53,8 @@ function setupServer({ port, projectDir }) {
         connection &&
           connection.send(
             JSON.stringify({
-              type: eventTypes.INITIALIZE,
-              payload: storiesJson,
+              type: eventTypes.INITIALIZE_STORIES,
+              payload: storiesJson.stories,
             })
           );
       } catch (err) {
@@ -67,9 +69,41 @@ function setupServer({ port, projectDir }) {
     // mtime: last modified time for the changed file
     // explanation: textual information how this change was detected
     onChange: (filePath, mtime, explanation) => {
-      console.log("on change", filePath, mtime, explanation);
+      // TODO: Likely this will connect with the configuration somehow
+      if (
+        filePath.endsWith(".stories.js") ||
+        filePath.endsWith(".stories.jsx") ||
+        filePath.endsWith(".stories.ts") ||
+        filePath.endsWith(".stories.tsx")
+      ) {
+        measure("send changed stories", async () => {
+          try {
+            const csf = (await readCsf(filePath)).parse();
+            const ext = path.extname(filePath);
+            const relativePath = path.relative(projectDir, filePath);
 
-      // TODO: Load changed story information and send that
+            // TODO: Copied over from stories-json.js -> extract shared logic
+            const patches = {};
+            csf.stories.forEach((story) => {
+              patches[story.id] = {
+                ...story,
+                kind: csf.meta.title,
+                parameters: { ...story.parameters, fileName: relativePath },
+              };
+            });
+
+            connection &&
+              connection.send(
+                JSON.stringify({
+                  type: eventTypes.PATCH_STORIES,
+                  payload: patches,
+                })
+              );
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      }
     },
     // filePath: the removed file or directory
     // explanation: textual information how this change was detected

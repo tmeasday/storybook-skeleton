@@ -4,6 +4,18 @@ const { eventTypes } = require("./event-types");
 // This code expects the server is already running.
 const ws = new WebSocket("ws://localhost:8080");
 
+/*
+Example story:
+{
+  'buttontoggle--outlinebuttonssmall': {
+    id: 'buttontoggle--outlinebuttonssmall',
+    name: 'OutlineButtonsSmall',
+    parameters: [Object],
+    kind: 'ButtonToggle'
+  }
+  ...
+}
+*/
 let stories = {};
 
 ws.on("open", () => {
@@ -15,20 +27,13 @@ ws.on("message", (data) => {
     const { type, payload } = JSON.parse(data);
 
     switch (type) {
-      case eventTypes.INITIALIZE:
-        /*
-Example story:
-{
-  'buttontoggle--outlinebuttonssmall': {
-    id: 'buttontoggle--outlinebuttonssmall',
-    name: 'OutlineButtonsSmall',
-    parameters: [Object],
-    kind: 'ButtonToggle'
-  }
-  ...
-}
-        */
-        stories = payload.stories;
+      case eventTypes.INITIALIZE_STORIES:
+        stories = payload;
+        break;
+      case eventTypes.PATCH_STORIES:
+        Object.entries(payload).forEach(([k, v]) => {
+          stories[k] = v;
+        });
         break;
       default:
         console.warn("Unknown event type: %s", type);
