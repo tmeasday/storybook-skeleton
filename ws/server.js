@@ -3,6 +3,7 @@ const { Server } = require("ws");
 const { setupFileWatcher } = require("./file-watcher");
 const { extractStoriesJson } = require("../webpack/stories-json");
 const { measure } = require("../src/measure");
+const { eventTypes } = require("./event-types");
 
 const projectDir = path.join(process.cwd(), "design-system");
 
@@ -38,11 +39,26 @@ function setupServer({ port, projectDir }) {
   wss.on("connection", (ws) => {
     connection = ws;
 
-    ws.on("message", (message) => {
+    connection.on("message", (message) => {
       console.log("received: %s", message);
     });
 
-    ws.send("hello, you have connected to the server successfully");
+    // Send initial stories. The rest will be patched by the client based on fs events
+    measure("send initial stories", async () => {
+      try {
+        const storiesJson = await parseStoriesJson(projectDir);
+
+        connection &&
+          connection.send(
+            JSON.stringify({
+              type: eventTypes.INITIALIZE,
+              payload: storiesJson,
+            })
+          );
+      } catch (err) {
+        console.error(err);
+      }
+    });
   });
 
   const wp = setupFileWatcher({
@@ -50,28 +66,18 @@ function setupServer({ port, projectDir }) {
     // filePath: the changed file
     // mtime: last modified time for the changed file
     // explanation: textual information how this change was detected
-    onChange: (filePath, mtime, explanation) =>
-      measure("stories generation", async () => {
-        try {
-          const storiesJson = await parseStoriesJson(projectDir);
+    onChange: (filePath, mtime, explanation) => {
+      console.log("on change", filePath, mtime, explanation);
 
-          connection && connection.send(JSON.stringify(storiesJson));
-        } catch (err) {
-          console.error(err);
-        }
-      }),
+      // TODO: Load changed story information and send that
+    },
     // filePath: the removed file or directory
     // explanation: textual information how this change was detected
-    onRemove: (filePath, explanation) =>
-      measure("stories generation", async () => {
-        try {
-          const storiesJson = await parseStoriesJson(projectDir);
+    onRemove: (filePath, explanation) => {
+      console.log("on remove", filePath, explanation);
 
-          connection && connection.send(JSON.stringify(storiesJson));
-        } catch (err) {
-          console.error(err);
-        }
-      }),
+      // TODO: Figure out the name of the removed story and send that
+    },
   });
 
   wss.on("close", () => wp.close());
