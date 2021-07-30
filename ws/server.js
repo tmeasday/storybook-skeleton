@@ -78,24 +78,11 @@ function setupServer({ port, projectDir }) {
       ) {
         measure("send changed stories", async () => {
           try {
-            const csf = (await readCsf(filePath)).parse();
-            const relativePath = path.relative(projectDir, filePath);
-
-            // TODO: Copied over from stories-json.js -> extract shared logic
-            const patches = {};
-            csf.stories.forEach((story) => {
-              patches[story.id] = {
-                ...story,
-                kind: csf.meta.title,
-                parameters: { ...story.parameters, fileName: relativePath },
-              };
-            });
-
             connection &&
               connection.send(
                 JSON.stringify({
                   type: eventTypes.PATCH_STORIES,
-                  payload: patches,
+                  payload: await getStories(projectDir, filePath),
                 })
               );
           } catch (err) {
@@ -109,7 +96,37 @@ function setupServer({ port, projectDir }) {
     onRemove: (filePath, explanation) => {
       console.log("on remove", filePath, explanation);
 
-      // TODO: Figure out the name of the removed story and send that
+      // TODO: Figure out the name of the removed story and send that. It's a
+      // simple delete operation against each story at the client then.
+
+      // TODO: Convert to async for an extra bit of perf
+      if (fs.lstatSync(path_string).isDirectory()) {
+        // Since directories can contain stories, likely in this case it's safest
+        // regenerate all stories. The question is, does the client still need
+        // to know what changed (is it useful info?). If so, it's also possible
+        // to return the deleted stories like in the other case (simpler)
+      }
+      // TODO: Likely this will connect with the configuration somehow
+      else if (
+        filePath.endsWith(".stories.js") ||
+        filePath.endsWith(".stories.jsx") ||
+        filePath.endsWith(".stories.ts") ||
+        filePath.endsWith(".stories.tsx")
+      ) {
+        measure("send deleted stories", async () => {
+          try {
+            connection &&
+              connection.send(
+                JSON.stringify({
+                  type: eventTypes.DELETE_STORIES,
+                  payload: await getStories(projectDir, filePath),
+                })
+              );
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      }
     },
   });
 
@@ -118,10 +135,27 @@ function setupServer({ port, projectDir }) {
   console.log(`websocket server started at ws://localhost:${port}`);
 }
 
+// TODO: Copied over from stories-json.js -> push there?
+async function getStories(projectDir, filePath) {
+  const ret = {};
+  const csf = (await readCsf(filePath)).parse();
+  const relativePath = path.relative(projectDir, filePath);
+
+  csf.stories.forEach((story) => {
+    ret[story.id] = {
+      ...story,
+      kind: csf.meta.title,
+      parameters: { ...story.parameters, fileName: relativePath },
+    };
+  });
+
+  return ret;
+}
+
 async function parseStoriesJson(configDir) {
   return await extractStoriesJson({
     configDir,
-    stories: "./src/**/*.stories.(jsx|tsx)",
+    stories: "./src/**/*.stories.(js|ts|jsx|tsx)",
   });
 }
 

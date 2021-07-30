@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { eventTypes } = require("./event-types");
+const { reduceStories } = require("./reduce-stories");
 
 // This code expects the server is already running.
 const ws = new WebSocket("ws://localhost:8080");
@@ -25,19 +25,22 @@ ws.on("open", () => {
 ws.on("message", (data) => {
   try {
     const { type, payload } = JSON.parse(data);
+    const ret = reduceStories({ type, payload, initialData: stories });
 
-    switch (type) {
-      case eventTypes.INITIALIZE_STORIES:
-        stories = payload;
-        break;
-      case eventTypes.PATCH_STORIES:
-        Object.entries(payload).forEach(([k, v]) => {
-          stories[k] = v;
-        });
-        break;
-      default:
-        console.warn("Unknown event type: %s", type);
-        break;
+    if (ret) {
+      stories = ret;
+
+      // To understand how long file watching operation took, use command like
+      // date '+%s' && touch Input.stories.js and then subtract the timestamps
+      console.log(
+        "timestamp:",
+        // Time in seconds
+        Math.floor(new Date().getTime() / 1000),
+        "event type:",
+        type,
+        "stories length:",
+        Object.keys(stories).length
+      );
     }
   } catch (error) {
     console.error(error);
