@@ -9,6 +9,7 @@
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
     "start-ws-server": "node ./ws/server.js",
     "start-ws-client": "node ./ws/client.js",
+    "test-storysort-parser": "node ./storysort-parser/parse.js",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js",
     "benchmark-file-watcher": "node ./scripts/benchmark-file-watcher.js",
@@ -49,6 +50,9 @@
   "dependencies": {
     "@storybook/csf": "^0.0.1",
     "@storybook/csf-tools": "^6.3.0-alpha.30",
+    "acorn": "^8.4.1",
+    "acorn-walk": "^8.1.1",
+    "astring": "^1.7.5",
     "glob-base": "^0.3.0",
     "globby": "^11.0.3",
     "handlebars": "^4.7.7",
