@@ -2,7 +2,7 @@ const path = require("path");
 const { Server } = require("ws");
 const { readCsf } = require("@storybook/csf-tools");
 
-const { setupFileWatcher } = require("./file-watcher");
+const { setupFileWatcher } = require("../file-watcher/watchpack");
 const { extractStoriesJson } = require("../webpack/stories-json");
 const { measure } = require("../src/measure");
 const { eventTypes } = require("./event-types");
