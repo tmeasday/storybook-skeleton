@@ -4,9 +4,9 @@ function setupFileWatcher({ projectDir, onChange, onRemove }) {
   // See https://www.npmjs.com/package/watchpack for full options.
   // If you want less traffic, consider using aggregation with some interval
   const wp = new Watchpack({
-    poll: true,
-    // Slower but the assumption is that some people use symlinks
-    followSymlinks: true,
+    // poll: true, // Slow!!! Enable only in special cases
+    // Slower if enabled but the assumption is that some people use symlinks
+    followSymlinks: false,
     ignored: "**/.git",
   });
   wp.watch({

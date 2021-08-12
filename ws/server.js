@@ -7,7 +7,7 @@ const { extractStoriesJson } = require("../webpack/stories-json");
 const { measure } = require("../src/measure");
 const { eventTypes } = require("./event-types");
 
-const projectDir = path.join(process.cwd(), "design-system");
+const projectDir = path.join(process.cwd(), "design-system", "src");
 
 function setupServer({ port, projectDir }) {
   // TODO: Figure out good defaults
