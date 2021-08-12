@@ -9,7 +9,7 @@ const avatarStories = path.join(
 const dirsToTest = [
   path.join(process.cwd(), "design-system", "src", "components"),
   path.join(process.cwd(), "design-system", "src"),
-  // This won't even complete!
+  // This won't even complete when polling is off!
   // path.join(process.cwd(), "design-system"),
 ];
 
