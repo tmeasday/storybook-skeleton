@@ -22,7 +22,7 @@ The process to build and run the skeleton is as follows:
 
 The following additional parameters are supported:
 
-- `BUILDER=babel` - It accepts "none", "babel", "esbuild", and "swc" and defaults to "none".
+- `BUILDER=babel` - It accepts "none", "babel", "esbuild", and "swc" and defaults to "babel".
 - `COMPILE_LAZILY=1` - Set to enable lazy compilation.
 - `IMPORT=lazy-require-context` - How to import CSF files (not all options are available for all projects). Options: `lazy-require-context|require-context|lazy-static|static|lazy-dynamic|dynamic`
 - `VERTICAL=1` - Split "vertically" by transforming CSF files to import components async.
@@ -46,9 +46,17 @@ yarn start-manager
 
 - The Storybook design system `skeleton` branch is setup additionally (you will need to symlink).
 
+## WebSocket Server
+
+There's a websocket server for communicating changes made to stories. To run it, use `yarn start-ws-server`.
+
+To test the server using a small client, run `yarn start-ws-client`. Make sure that the server is running before running the command.
+
 ## Benchmarking
 
 Run `yarn benchmark` and it will give you some numbers as it builds `design-system` (make sure to link first as above) using different tools available.
+
+To measure the execution time of `stories.json` generation, run `yarn measure-stories-generation`. The script expects to find `design-system` directory within the repository root.
 
 ## Code structure
 

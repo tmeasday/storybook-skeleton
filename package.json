@@ -4,10 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "postinstall": "cd examples/template && yarn",
     "start-wps": "DEV_SERVER=wps wp --target development",
     "start-wds": "TARGET=development DEV_SERVER=wds webpack serve",
+    "start-ws-server": "node ./ws/server.js",
+    "start-ws-client": "node ./ws/client.js",
+    "test-storysort-parser": "node ./storysort-parser/parse.js",
     "build": "wp --target production",
     "benchmark": "node ./scripts/benchmark.js",
+    "benchmark-file-watcher": "node ./scripts/benchmark-file-watcher.js",
+    "measure-stories-generation": "node ./scripts/measure-stories-generation.js",
     "start-manager": "http-server composing-storybook/storybook-static"
   },
   "devDependencies": {
@@ -44,6 +50,9 @@
   "dependencies": {
     "@storybook/csf": "^0.0.1",
     "@storybook/csf-tools": "^6.3.0-alpha.30",
+    "acorn": "^8.4.1",
+    "acorn-walk": "^8.1.1",
+    "astring": "^1.7.5",
     "glob-base": "^0.3.0",
     "globby": "^11.0.3",
     "handlebars": "^4.7.7",
@@ -51,6 +60,9 @@
     "path-browserify": "^1.0.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "telejson": "^5.3.1"
+    "shelljs": "^0.8.4",
+    "telejson": "^5.3.1",
+    "watchpack": "^2.2.0",
+    "ws": "^8.0.0"
   }
 }

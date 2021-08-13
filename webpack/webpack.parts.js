@@ -5,6 +5,7 @@ const { WebpackPluginServe } = require("webpack-plugin-serve");
 const VirtualModulesPlugin = require("webpack-virtual-modules");
 const { extractStoriesJson } = require("./stories-json");
 const { importFn } = require("./importFn");
+const { attachMetaApi } = require("./meta-api");
 
 const SKELETON_ENTRY = "./skeleton-entry.js";
 
@@ -95,7 +96,7 @@ const builderAlternatives = {
   none: {},
 };
 
-const wps = {
+const wps = ({ stories, configDir }) => ({
   entry: ["webpack-plugin-serve/client", SKELETON_ENTRY],
   watch: true,
   plugins: [
@@ -104,18 +105,23 @@ const wps = {
       static: "./dist",
       liveReload: true,
       waitForBuild: true,
-      middleware: (app) =>
+      middleware: async (app) => {
+        const storiesJson = await extractStoriesJson({ stories, configDir });
+
         app.use(async (ctx, next) => {
           await next();
           ctx.set("Access-Control-Allow-Headers", "*");
           ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
           ctx.set("Access-Control-Allow-Origin", "*");
-        }),
+        });
+
+        attachMetaApi(app, storiesJson);
+      },
     }),
   ],
-};
+});
 
-const wds = {
+const wds = ({ stories, configDir }) => ({
   devServer: {
     port: 5000,
     contentBase: __dirname,
@@ -125,8 +131,13 @@ const wds = {
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Origin": "*",
     },
+    after: async (app) => {
+      const storiesJson = await extractStoriesJson({ stories, configDir });
+
+      attachMetaApi(app, storiesJson);
+    },
   },
-};
+});
 
 const cpuProfiler = () => {
   const CpuProfilerWebpackPlugin = require("cpuprofile-webpack-plugin");
