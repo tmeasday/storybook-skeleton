@@ -23,12 +23,9 @@ const examples = {
       encoding: "utf-8",
     }
   ),
-  // This one fails to eval
-  /*
   function: fs.readFileSync(path.join(__dirname, "./examples/function.js"), {
     encoding: "utf-8",
   }),
-  */
 };
 const stories = [{ kind: "test" }, { kind: "test" }];
 
@@ -45,14 +42,19 @@ function parse(file, stories) {
           const value = childNode.value;
 
           ret = parseValue(value);
-        }
-        // TODO: Figure out why a regular function fails to eval
-        else if (
-          childNode.value.type === "ArrowFunctionExpression" // ||
-          // childNode.value.type === "FunctionExpression"
-        ) {
+        } else if (childNode.value.type === "ArrowFunctionExpression") {
           const fnAst = childNode.value;
           const code = astring.generate(fnAst);
+
+          // TODO: This is applied wrong, this should follow Storybook source
+          ret = eval(code)(stories, stories);
+        } else if (childNode.value.type === "FunctionExpression") {
+          const fnAst = childNode.value;
+          const fnName = fnAst.id.name;
+          // Wrap the function within an arrow function, call it, and return
+          const code = `(a, b) => {${astring.generate(
+            fnAst
+          )}; return ${fnName}(a, b)}`;
 
           // TODO: This is applied wrong, this should follow Storybook source
           ret = eval(code)(stories, stories);
